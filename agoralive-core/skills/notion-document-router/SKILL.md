@@ -1,180 +1,221 @@
 ---
 name: notion-document-router
 description: |
-  Pipeline d'alimentation à source de vérité unique pour les bases Notion AgoraLive + archivage Drive.
-  L'utilisateur dépose un document (PDF, audio, image, transcription, brief, contrat, dictée bug…) — le skill
-  (1) upload le fichier sur Google Drive dans l'arborescence officielle AgoraLive, (2) crée une fiche dans la
-  base maître `📥 Documents Source` Notion avec le lien Drive, (3) classifie le type, (4) crée/met à jour
-  les fiches dérivées dans les bases spécialisées concernées, liées à la maître par relations. Garantit
-  idempotence, anti-doublon Notion ET Drive, traçabilité bout-en-bout. Triggers : "route ce document",
-  "alimente les bases", "traite ce fichier", "classe ce contrat/cession/bug/article", "fais la fiche
-  maître", "propage dans Notion", "pousse dans les bases", "upload sur Drive", "Documents Source", "📥",
-  ou dépôt d'un fichier sans instruction. Aussi "traite la dernière ligne de Documents Source",
-  "Notion routing". Anti-triggers : un seul type demandé explicitement avec skill dédié existant
-  (`po-bug-agoralive`, `triage-contrat-agoralive`, `officiel-article-v3`) — déléguer.
+  Pipeline d'alimentation à source de vérité unique pour les bases Notion AgoraLive + archivage automatique Drive miroir via Apps Script "AgoraLive Drive Mover".
+
+  L'utilisateur dépose un document selon l'un des trois modes :
+  - Mode A — drag-drop natif dans 📥 INBOX du Shared Drive (async, batch, rapide)
+  - Mode B — upload direct dans le chat Cowork (interactif, synchrone)
+  - Mode C — note vocale Notion AI (texte déjà transcrit) accessible depuis 🎙️ Inbox Vocale (multi-distribution multi-cockpits)
+
+  Le skill (1) lit le contenu texte, (2) crée une fiche dans la base maître `📥 Documents Source`, (3) classifie le type + identifie les bases dérivées concernées (potentiellement plusieurs pour une note vocale), (4) crée les fiches dérivées liées, (5) remplit le champ `📁 Drive cible (folder ID)` selon la table de mapping pour que l'Apps Script déplace le fichier automatiquement dans les 5 minutes suivantes.
+
+  Triggers : "route ce document", "alimente les bases", "traite ce fichier", "classe ce contrat/cession/bug/article", "fais la fiche maître", "propage dans Notion", "pousse dans les bases", "Documents Source", "📥", "route mes vocales", "traite mes notes Notion AI", "traite l'inbox", "vide l'inbox", ou dépôt d'un fichier sans instruction. Aussi "traite la dernière ligne de Documents Source", "Notion routing".
+
+  Anti-triggers : un seul type demandé explicitement avec skill dédié existant (`po-bug-agoralive`, `triage-contrat-agoralive`, `officiel-article-v3`) — déléguer.
 ---
 
-# notion-document-router — Skill d'alimentation unifiée Notion + Drive
+# notion-document-router v2 — Routing unifié Notion + Drive miroir
 
 ## Mission
-Garantir qu'**un document = un fichier Drive archivé + une fiche source Notion + N fiches dérivées liées**, jamais de duplication, toujours rejouable.
 
----
+Garantir qu'**un document = un fichier Drive archivé dans le bon dossier miroir + une fiche source Notion + N fiches dérivées liées**, sans duplication, toujours rejouable, qui fonctionne pour **toute l'équipe AgoraLive** sans setup individuel — Pauline, Julie, Éloi, Michelle, Olivia, Philippine se partagent ce même skill.
 
-## 1. Pré-requis (one-shot)
+## Architecture en 3 couches
 
-Avant la première exécution, vérifier que :
+```
+[INGESTION]                  [CLASSIFICATION]              [ARCHIVAGE DRIVE]
+─────────────                ───────────────                ──────────────────
+A. 📥 INBOX (Drive)  ─┐
+B. Upload Cowork     ─┼─►  notion-document-router    ─►   Apps Script
+C. 🎙️ Inbox Vocale  ─┘     (ce skill, ici)                  AgoraLive Drive Mover
+                              │                                trigger 5 min
+                              ▼                                (paul@agoralive.ai)
+                       Notion: maître +
+                       N fiches dérivées +
+                       📁 Drive cible (folder ID)
+```
 
-1. La base maître `📥 Documents Source` existe dans Notion. Si non → la créer (schéma minimal ci-dessous).
-2. Le dossier racine Drive `AgoraLive — Documents Source` existe. Si non → le créer (à la racine du Drive partagé AgoraLive).
-3. Les sous-dossiers par type existent dans le dossier racine : `Contrats/`, `Cessions/`, `Bugs/`, `Articles/`, `CV/`, `Devis/`, `Comptes-rendus/`, `Briefs/`, `Autres/`. Créer ceux manquants à la demande.
+Le skill ne touche **pas directement** au Drive pour les moves. Il prépare la fiche Notion avec le bon `📁 Drive cible (folder ID)`, et l'Apps Script ferme la boucle de manière asynchrone (trigger temporel 5 min).
 
-**Schéma minimal `📥 Documents Source`** : `📄 Titre`, `🔗 URL fichier Drive`, `📦 Type détecté` (select), `🚦 Statut routage` (select), `🎯 Bases cibles` (multi-select), `🧠 Confiance IA` (number), `📝 Résumé extrait` (text), `👤 Déposé par` (people), `🤖 Logs` (text), relations vers chaque base dérivée.
+## Pré-requis (déjà en place côté infra)
 
----
+1. Base maître `📥 Documents Source` Notion — ID `db0066ca76eb4eeb9a0741ba22377326`
+2. Dossier `📥 INBOX` à la racine du Shared Drive AgoraLive — ID `1apPjlKOsdYT44dYHSnBT7yi2QA5Lbemq`
+3. Dossier `🎙️ Inbox Vocale` à la racine — ID `15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y`
+4. Apps Script "AgoraLive Drive Mover" déployé avec trigger temporel 5 min sur `routePendingMoves`
+5. Notion Connection "AgoraLive Drive Mover" partagée avec la base maître
+6. Champ `📁 Drive cible (folder ID)` (rich_text) sur la base maître
 
-## 2. Procédure complète (7 étapes)
+Aucun setup côté utilisateur final. Tout est partagé via l'org Workspace AgoraLive.
 
-### Étape A — Lecture du document
+## Procédure complète (7 étapes)
 
-1. Si l'utilisateur a uploadé un fichier dans Cowork → lire le contenu (Read pour texte/PDF/image, transcription pour audio).
-2. Si l'utilisateur dit "traite la dernière ligne de Documents Source" → `notion-query-database-view` sur la base maître, filtrer `🚦 Statut routage = 📥 À traiter`, prendre la plus récente.
-3. Si l'utilisateur fournit un lien Drive sans fichier local → télécharger via `download_file_content` Drive MCP, puis lire.
+### Étape A — Détection de la source
+
+Trois modes possibles, à détecter selon le contexte d'invocation :
+
+**Mode B (Upload chat Cowork — synchrone)** — déclenché si l'utilisateur a joint un fichier au message courant :
+1. Lire le contenu via `Read` tool (texte/PDF/image/docx)
+2. Upload du fichier dans `📥 INBOX` via `create_file` Drive MCP avec `parentId = 1apPjlKOsdYT44dYHSnBT7yi2QA5Lbemq`
+3. Continuer en Étape B avec le file_id Drive retourné
+
+**Mode A (Scan INBOX — async batch)** — déclenché par "route mon dernier doc", "traite l'inbox", "vide l'inbox" :
+1. Lister les fichiers de `📥 INBOX` via `search_files` Drive MCP (`parentId = '1apPjlKOsdYT44dYHSnBT7yi2QA5Lbemq'`)
+2. Pour chaque fichier non encore référencé dans la base maître (cf. anti-doublon étape D), traiter un par un
+3. Lire le contenu via `read_file_content` Drive MCP
+
+**Mode C (Scan Inbox Vocale — async)** — déclenché par "route mes vocales", "traite mes notes Notion AI" :
+1. Lister les fichiers/pages texte dans `🎙️ Inbox Vocale` via `search_files` (`parentId = '15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y'`)
+2. Pour chaque note non encore référencée, lire le contenu via `read_file_content`
+3. Les notes vocales sont **déjà du texte** (transcription Notion AI faite côté Notion mobile/desktop), aucune étape de transcription Whisper à effectuer
 
 ### Étape B — Classification
 
-1. Identifier le **type** via signaux textuels/structurels (titre, structure, mots-clés). Types possibles : `Contrat`, `Cession`, `Bug`, `Article`, `CV`, `Devis`, `Compte-rendu`, `Brief`, `Autre`.
+1. Identifier le **type** parmi : `📜 Contrat`, `📝 Cession`, `🐛 Bug`, `✍️ Article`, `👔 CV`, `💰 Devis sponsor`, `📅 Compte-rendu`, `📄 PDF brut`, `🎙️ Audio` (= note vocale issue de Notion AI), `🖼️ Image`, `📝 Transcription`, `🧾 Brief`, `❓ Autre`
+
 2. Calculer un **score de confiance 0-100** :
-   - 90-100 : signaux multiples convergents (ex : titre "Contrat" + "Article 1" + signatures)
+   - 90-100 : signaux multiples convergents (ex : titre "Contrat" + clauses + signatures + montant)
    - 70-89 : signaux clairs mais partiels
-   - <70 : ambigu → ne **pas** router, juste créer fiche maître en `🔄 En classification` et arrêter
-3. Identifier les **bases cibles** (1 à N) et les **entités nommées** (personnes, orgas, congrès, routes).
+   - <70 : ambigu → créer fiche maître en statut `🔄 En classification`, **ne pas propager** aux bases dérivées, ne pas remplir `📁 Drive cible`, attendre validation manuelle
 
-### Étape C — Anti-doublon Drive (lookup avant upload)
+3. Identifier les **bases dérivées cibles** (1 à N). Pour les notes vocales (mode C), souvent multiple : une dictée libre peut toucher `🐛 Bugs` + `📅 Compte-rendu` + `👤 Personnes` + `🏛️ Congrès` en même temps. Découper le contenu par sujet et alimenter chaque base concernée.
 
-1. Construire le **chemin Drive cible** :
-   ```
-   AgoraLive — Documents Source/<TYPE>/<ANNÉE>/[<CONGRÈS si applicable>/]<nom_fichier>
-   ```
-   Exemple : `AgoraLive — Documents Source/Contrats/2026/SFODF/Cession_Yves_Surlemont.pdf`
-2. **`search_files`** Drive MCP avec le nom du fichier dans le dossier cible.
-3. Si un fichier au même nom existe **ET** que la taille/hash correspond → réutiliser le file ID existant, **ne pas re-uploader**.
-4. Si nom identique mais contenu différent → ajouter suffixe `_v2`, `_v3`… au nom.
+4. Identifier les **entités nommées** : personnes (auteurs, intervenants, contacts), organisations, congrès, routes (pour les bugs), conférences. Stocker leurs identifiants pour les relations en étape F.
 
-### Étape D — Upload Drive
+### Étape C — Table de mapping Type → Drive folder ID
 
-1. Si le fichier vient d'un upload Cowork → le copier dans `/sessions/.../uploads/` accessible.
-2. **`create_file`** Drive MCP avec :
-   - `name` : nom propre (sans espace bizarre, garde l'extension d'origine)
-   - `parent_id` : ID du sous-dossier cible (créer le sous-dossier d'année/congrès si manquant — voir note)
-   - `content` : le fichier binaire
-3. Récupérer le **`file_id`** et le **`webViewLink`** (lien Drive partageable).
-4. Vérifier les permissions : le lien doit être accessible aux membres AgoraLive (par défaut le Drive partagé l'assure).
+| Type détecté | Folder ID Drive cible | Chemin Drive lisible |
+|---|---|---|
+| `📜 Contrat` | `1P8xOntkh2pK5uEdLWtk4SS2rmi9RHoBe` | ⚖️ Légal & Admin / 📜 Contrats |
+| `📝 Cession` | `16HiT1Eb-hU6AO2iQ2dlR3DlKg11T4Qwq` | ⚖️ Légal & Admin / 📝 Cessions de droits |
+| `🐛 Bug` | `1ubsF-pQshO3arKglPe4EmjmHS4QVA-OD` | 🚀 Squad Produit / ⚙️ Dev |
+| `✍️ Article` | `1yG2YQLauoEkTa66yuEk0TejgITVQcpVf` | 📰 Édito / ✍️ Articles |
+| `👔 CV` | `1vGOP1MOBrdbRsIjBDFQOv99SV0LuIICk` | 📚 Bases partagées / 👔 Recrutement |
+| `💰 Devis sponsor` | `1eNaPPQZy25nCzs4uiE4hN12L4wvYGf7x` | 💼 Squad Vente / 📊 Pricer Sponsors |
+| `📅 Compte-rendu` | `12oZur5CwnXZn_SQK2W-WdHO1o7Hu6loC` | 📊 Tableaux de bord / 📅 Journal de bord |
+| `🖼️ Image` | `1Xavmv9Ktt08pwTpNBeVg_W9OawopRUhA` | 📣 Squad Communication / 📷 Visuels & Assets |
+| `🎙️ Audio` | `15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y` | 🎙️ Inbox Vocale (reste sur place, no-op Apps Script) |
+| `📄 PDF brut`, `📝 Transcription`, `🧾 Brief`, `❓ Autre` | `1b_Wvjdvd0_OhHV7awi6R_fEq5IWE2kK_` | 📚 Bases partagées / 📥 Documents Source (catch-all) |
 
-> **Note sur la création de dossier** : si la version actuelle du Drive MCP n'expose pas de `create_folder`, créer le sous-dossier manquant **manuellement** via une commande bash (gdrive CLI ou l'API REST). Si impossible, dégrader : uploader à la racine du dossier de type, et signaler à l'utilisateur "sous-dossier <X> à créer à la main".
+### Étape D — Anti-doublon Notion (lookup avant création)
 
-### Étape E — Anti-doublon Notion (lookup avant création)
+Avant de créer la fiche maître :
+1. `notion-query-database-view` sur la base maître, filtrer `🔗 URL fichier` contenant le Drive file ID
+2. Si une fiche existe déjà → réutiliser, ne pas dupliquer. Logger "déjà routé".
 
 Pour chaque entité nommée à créer (`👤 Personnes`, `🏛️ Organisations`, `🏛️ Congrès`, `🗺️ Routes`) :
-1. **`notion-search`** ciblé sur la base.
-2. Si fuzzy match (nom exact ou email exact) → réutiliser l'ID existant.
-3. Sinon → créer la fiche.
+1. `notion-search` ciblé sur la base concernée
+2. Si fuzzy match (nom exact ou email exact) → réutiliser l'ID existant
+3. Sinon → créer la fiche
 
-### Étape F — Création fiche maître + propagation
+### Étape E — Création fiche maître
 
-#### F.1 — Fiche maître
+`notion-create-pages` dans `📥 Documents Source` (data_source_id `25697468-84b6-4016-97b2-14ce52461923`) avec :
+- `📄 Titre` : titre actionnable extrait du document
+- `🔗 URL fichier` : `https://drive.google.com/file/d/{file_id}/view`
+- `📦 Type détecté` : selon classification étape B
+- `🚦 Statut routage` : `✅ Routé` (ou `🔄 En classification` si confiance < 70)
+- `🎯 Bases cibles` : multi-select avec les bases dérivées identifiées
+- `🧠 Confiance IA` : score 0.0 à 1.0
+- `📝 Résumé extrait` : 3 phrases max
+- `🤖 Logs` : `[<ISO timestamp>] Mode <A|B|C>. Drive file ID: <id>. Classification: <type> (confiance N%). Signaux: <résumé>. Entités: <liste>.`
+- `📁 Drive cible (folder ID)` : ID du dossier selon table mapping étape C
 
-**`notion-create-pages`** dans `📥 Documents Source` avec :
-- `📄 Titre` : titre actionnable extrait
-- `🔗 URL fichier Drive` : `webViewLink` obtenu à l'étape D
-- `📦 Type détecté` : selon taxonomie
-- `🚦 Statut routage` : `🔄 En classification` (basculera à `✅ Routé` à la fin)
-- `🎯 Bases cibles` : multi-select avec les bases ciblées
-- `🧠 Confiance IA` : pourcentage
-- `📝 Résumé extrait` : 3 phrases
-- `👤 Déposé par` : utilisateur courant (Paul par défaut)
-- `🤖 Logs` : timestamp + `Drive: <file_id>` + résultat classification
-
-#### F.2 — Propagation aux bases dérivées
+### Étape F — Propagation aux bases dérivées
 
 Pour chaque base cible identifiée :
-1. **`notion-create-pages`** avec les champs spécifiques (cf. mapping ci-dessous) + la relation `→ 📥 Documents Source` pointant vers la maître + le `🔗 URL fichier Drive` recopié dans la fiche dérivée pour accès rapide.
-2. Récupérer l'ID de la fiche dérivée.
-3. **`notion-update-page`** sur la maître pour remplir la relation `→ <base>` avec cet ID.
+1. `notion-create-pages` dans la base dérivée avec les champs spécifiques (mapping ci-dessous) + relation `→ 📥 Documents Source` pointant vers la maître + `🔗 URL fichier` recopié pour accès rapide
+2. Récupérer l'ID de la fiche dérivée
+3. `notion-update-page` sur la maître pour remplir la relation `→ <base>` avec cet ID
+
+**Mappings par base dérivée :**
+
+- **📜 Contrats** (id `adaadf0e-327f-4bfc-bb1e-a19bdf655922`) → Partie 1, Partie 2, Date signature, Montant, Statut (Brouillon/En signature/Signé), 🔗 URL Drive, → 📥 Doc source
+- **📝 Cessions** (id `9ab85bdd-3525-47e8-a471-e914da7278b2`) → Intervenant (rel Personnes), Conférence (rel), Date, Statut signature, 🔗 URL Drive, → 📥 Doc source
+- **🐛 Bugs** (id `dd1b0215-2810-4e17-bbc6-0e30d52a321e`) → Titre actionnable, Route (rel), Sévérité (P0/P1/P2/P3), Statut (`📥 À traiter`), DoD, 🔗 URL Drive, → 📥 Doc source
+- **✍️ Articles** (id `b6733212-5076-4fed-a165-2e513a663317`) → Titre, Auteur principal + Co-auteurs (rel Personnes), Conférence source (rel), Type (Synthèse/Tribune/...), Statut rédaction, 📎 Lien Drive, → 📥 Doc source
+- **👔 Recrutement** (id `9658f18b-205a-4372-a36d-ff37f8d46b5b`) → Nom, Poste visé, Statut (`📥 Sourcé`), → 👤 Personnes (rel, créer si absent), 🔗 URL Drive, → 📥 Doc source
+- **💰 Sponsors** (id `3abc2ce9-e44e-44e4-b3e5-b2ea2aced1a0`) → Congrès (rel), Montant, Tier, Statut négociation, 🔗 URL Drive, → 📥 Doc source
+- **📅 Journal de bord** — pages ou base selon le cas — Date, Participants (rel Personnes), Décisions, Actions, 🔗 URL Drive, → 📥 Doc source
+
+**Cas particulier mode C (notes vocales)** : une note vocale touche souvent N bases en même temps. Créer N fiches dérivées (une par sujet identifié), toutes liées à la même fiche maître via `→ 📥 Documents Source`. Sur chaque cockpit jumeau qui consulte une de ces bases, la note vocale apparaîtra naturellement via la relation.
 
 ### Étape G — Finalisation
 
-1. **`notion-update-page`** sur la maître : `🚦 Statut routage` = `✅ Routé`, ajouter au champ `🤖 Logs` la liste des fiches créées (ID + base + URL).
-2. Retour utilisateur : récap chat avec liens Notion vers la maître + toutes les dérivées + lien Drive.
+1. Vérifier que la fiche maître a bien `🚦 Statut routage = ✅ Routé` ET `📁 Drive cible (folder ID)` rempli
+2. **L'Apps Script "AgoraLive Drive Mover" prendra le relais dans les 5 minutes suivantes** — aucune action Drive à faire depuis Cowork
+3. Pour mode C (notes vocales), `📁 Drive cible = 15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y` (Inbox Vocale elle-même) → Apps Script détecte que le fichier est déjà dans le target folder → no-op silencieux, note reste sur place comme désiré
 
----
+## Idempotence & rejouabilité
 
-## 3. Mappings champs (par base cible)
+- **Niveau Drive** : pas d'upload multiple. Mode B upload une fois dans INBOX, le fichier garde son ID stable jusqu'au move Apps Script
+- **Niveau fiche maître Notion** : anti-doublon via le champ `🔗 URL fichier` (étape D)
+- **Niveau fiches dérivées** : avant create, vérifier qu'il n'existe pas déjà une fiche dans la base liée à la même maître via la relation `→ 📥 Documents Source`. Si oui → `notion-update-page` au lieu de `notion-create-pages`
+- **Niveau Apps Script** : si le fichier n'est plus dans `📥 INBOX` (déjà déplacé), no-op silencieux. Le script peut tourner sur la même fiche plusieurs fois sans effet de bord
 
-**Contrat → 📜 Contrats** : Partie 1, Partie 2, Date signature, Montant, Statut (Brouillon/En signature/Signé), 🔗 URL Drive, → 📥 Doc source
-**Cession → 📝 Cessions** : Intervenant (relation Personnes), Conférence (relation), Date, Statut signature, 🔗 URL Drive, → 📥 Doc source
-**Bug → 🐛 Bugs** : Titre actionnable, Route (relation), Sévérité (P0/P1/P2/P3), Statut (📥 À traiter), DoD, 🔗 URL Drive, → 📥 Doc source
-**Article → ✍️ Articles** : Titre, Auteurs (relation Personnes), Conférence source (relation), Statut éditorial, 🔗 URL Drive, → 📥 Doc source
-**CV → 👔 Recrutement** : Nom, Poste visé, Statut (📥 Sourcé), Date entretien, → 👤 Personnes (création), 🔗 URL Drive, → 📥 Doc source
-**Devis Agoralib → 💰 Sponsors** : Congrès (relation), Montant, Tier, Statut négociation, 🔗 URL Drive, → 📥 Doc source
-**Compte-rendu → 📅 Journal de bord** : Date, Participants (relation Personnes), Décisions, Actions, 🔗 URL Drive, → 📥 Doc source
+## Trigger Apps Script (info, ne pas appeler depuis ce skill)
 
----
+L'Apps Script `AgoraLive Drive Mover` tourne toutes les 5 minutes sur le projet Google Apps Script de `paul@agoralive.ai` (`https://script.google.com/...`). Algorithme :
 
-## 4. Idempotence & rejouabilité
+1. Query la base maître Notion pour les items avec `🚦 Statut routage = ✅ Routé` AND `📁 Drive cible (folder ID)` non vide
+2. Pour chaque, extraire le Drive file ID depuis `🔗 URL fichier`
+3. Vérifier que le fichier est encore dans `📥 INBOX` (sinon skip — déjà bougé)
+4. `DriveApp.getFileById(fileId).moveTo(targetFolder)` selon `📁 Drive cible`
+5. Logger le résultat
 
-- **Niveau Drive** : avant upload, toujours `search_files` dans le dossier cible. Si même nom + même hash → réutiliser.
-- **Niveau Notion fiche maître** : si une fiche maître existe déjà avec le même `🔗 URL fichier Drive` → ne pas en créer une nouvelle, mettre à jour celle qui existe.
-- **Niveau fiches dérivées** : avant de créer une fiche dérivée, vérifier qu'il n'en existe pas déjà une liée à la même maître via la relation `→ 📥 Documents Source`. Si oui → `notion-update-page` au lieu de `notion-create-pages`.
+Les logs Apps Script sont consultables dans le journal d'exécution côté script.google.com.
 
----
+## Récap chat (fin d'exécution)
 
-## 5. Déclenchement depuis Notion
-
-Trois patterns supportés :
-
-1. **Push depuis Notion** : ligne créée dans `📥 Documents Source` avec lien Drive existant (pas de re-upload), statut `📥 À traiter`. Puis dans Cowork : *"Traite les nouveaux items de Documents Source"*.
-2. **Drop direct Cowork** : fichier déposé dans Cowork chat → upload Drive + création maître + propagation.
-3. **Scheduled task** : tâche planifiée (skill `schedule`) qui scanne `📥 Documents Source` toutes les 2h.
-
----
-
-## 6. Récap chat (fin d'exécution)
-
-Format obligatoire :
+Format obligatoire à rendre à l'utilisateur :
 
 ```
 ✅ Document routé : <Titre>
-📁 Drive : <webViewLink>
+📁 Drive cible : <chemin lisible> (move planifié dans les 5 min par Apps Script)
 📥 Fiche maître : <URL Notion>
 🎯 Bases alimentées (<N>) :
-  - 📜 Contrats — <URL>
-  - 👤 Personnes — <URL> (créé) / <URL> (réutilisé)
-  - 🏛️ Organisations — <URL> (réutilisé)
+  - 📜 Contrats — <URL Notion> (créé)
+  - 👤 Personnes — <URL Notion> (créé) / <URL> (réutilisé)
+  - 🏛️ Organisations — <URL Notion> (réutilisé)
 🧠 Confiance : <score>% — <statut>
 ```
 
-Si confiance <70 :
+Si confiance < 70 :
 
 ```
-⚠️ Classification incertaine (<score>%). Fichier uploadé sur Drive (<link>),
-fiche maître créée en attente. AUCUNE propagation Notion aux bases dérivées.
-Valide le type dans <URL maître> puis redemande "route à nouveau".
+⚠️ Classification incertaine (<score>%). Fiche maître créée en statut 🔄 En classification.
+Aucune propagation aux bases dérivées. Aucun move Drive prévu.
+Valide manuellement le type dans <URL maître> puis redemande "route à nouveau".
 ```
 
-Si l'upload Drive échoue (permission, quota, MCP indispo) :
+Si plusieurs fiches en mode C (note vocale multi-sujets) :
 
 ```
-⚠️ Upload Drive échoué : <raison>. Fiche maître créée SANS lien Drive,
-statut `🔄 En classification`. Re-uploade le fichier manuellement et
-remplis le champ 🔗 URL fichier Drive, puis redemande "route à nouveau".
+✅ Note vocale routée : <Titre / extrait>
+📁 Drive : reste dans 🎙️ Inbox Vocale (multi-distribution Notion uniquement)
+📥 Fiche maître : <URL>
+🎯 Sujets identifiés et distribués (<N>) :
+  - 🐛 Bug "page admin lente" → <URL>
+  - 📅 Compte-rendu "call sponsoring SFODF" → <URL>
+  - 👤 Personnes "Pierre M." → <URL>
+🧠 Confiance distribution : <score>%
 ```
 
----
+## Sécurité et permissions
 
-## 7. Sécurité et permissions
+- Contrats, cessions, CV : sous-dossiers Drive avec ACL restreints (configurer côté Drive Workspace, pas côté skill)
+- Si l'utilisateur déposant n'a pas les droits Drive sur le dossier cible → l'Apps Script échouera silencieusement et loggera l'erreur dans son journal ; vérifier les Apps Script logs en cas de blocage récurrent
+- Les notes vocales (`🎙️ Inbox Vocale`) sont visibles à toute l'équipe AgoraLive par défaut, attention au contenu sensible
 
-- Les contrats et cessions vont dans des sous-dossiers Drive **à accès restreint** (Olivier + Paul + Julien uniquement).
-- Les CV vont dans un sous-dossier RH restreint.
-- Les autres types (Bugs, Articles, Comptes-rendus, Briefs, Devis) sont accessibles à toute l'équipe AgoraLive.
-- Si l'utilisateur déposant n'a pas les droits pour un type donné → uploader quand même (l'admin Drive valide), mais marquer la fiche maître `🚨 Vérif permissions à faire`.
+## Setup nouveau membre AgoraLive
+
+Pour qu'un nouvel humain (Julie, Éloi, Michelle, Olivia, Philippine, ou futur joiner) puisse utiliser ce flux :
+1. Avoir un compte Workspace `@agoralive.ai` avec accès au Shared Drive AgoraLive
+2. Avoir le plugin `agoralive-core` installé dans Cowork (`claude plugin install agoralive-core@agoralive-plugins`)
+3. C'est tout. L'infrastructure (Apps Script, SA GCP, Notion integration, dossiers Drive) est mutualisée et déjà en place.
+
+## Historique versions
+
+- **v2** (2026-05-17) — Pivot architectural : 3 modes d'ingestion (INBOX/Cowork/Inbox Vocale), Apps Script externe pour les moves Drive, suppression du upload Cowork→Drive direct (trop lent), support natif des notes vocales Notion AI multi-distribution
+- **v1** (2026-05) — Première version : upload Cowork→Drive direct, structure Drive `AgoraLive — Documents Source/<Type>/<Année>/`, sans Apps Script
