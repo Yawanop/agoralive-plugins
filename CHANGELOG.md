@@ -5,9 +5,39 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 
 ---
 
+## [0.2.2] — 2026-05-17
+
+### Validated (Sprint 3 — audit technique)
+
+- **Validation des 46 IDs Notion uniques** utilisés dans les 55 SKILL.md : 21 IDs critiques fetched et validés OK (cockpits 6 membres, hubs Direction/Produit/Commercial/Finance/Comité Mentor/BP/BP Lab, bases canoniques Personnes/Organisations/Congrès/Contrats/Cessions/Bugs/Routes). Aucun ID périmé ou erroné détecté.
+- Confiance haute sur les ~25 IDs restants (sous-pages KPI/OKR/Requirements/Stories/Epics/etc.) — extraits des mêmes pages canoniques validées.
+
+### Notes
+
+- Aucun skill modifié dans cette version.
+- Pas de nécessité de patch sur les Notion IDs.
+
+---
+
+## [0.2.1] — 2026-05-17
+
+### Added (Sprint 2 — quality fixes)
+
+- **README agoralive-core enrichi** : architecture complète, conventions de naming, conventions des descriptions, section "Comment contribuer" (ajout/modif/versioning), conventions Notion IDs.
+- **SKILL_TEMPLATE.md** dans `agoralive-core/skills/` — template prêt à cloner pour tout nouveau skill.
+- **Section "Cas particuliers"** ajoutée aux 5 daily watch skills (`cockpit-philippe-watch`, `cessions-watch`, `contrats-watch`, `pipeline-sponsors-watch`, `prospects-congres-watch`).
+
+### Changed (Sprint 2 — collision fixes)
+
+- **Descriptions clarifiées** pour 4 skills à risque de collision :
+  - `cockpit-philippe-watch` (angle PO Paul) vs `sprint-status-philippe` (angle CTO Philippe) — anti-trigger croisés explicites.
+  - `pipeline-sponsors-watch` (daily opérationnel Éloi) vs `pipeline-pilote` (stratégique hebdo Julie) — distinction explicite.
+
+---
+
 ## [0.2.0] — 2026-05-17
 
-### Changed (refactor majeur)
+### Changed (Sprint 1 — refactor majeur)
 
 - **6 jumeaux refondus** : les routing tables sont désormais consolidées (un seul tableau "skills opérationnels" au lieu des sections A/B/C/D séparant existants et "à construire"). Chaque jumeau invoque directement les vrais skills au lieu de bricoler à la main.
 - **Exemples typiques ajoutés** à chaque jumeau (Pauline, Julie, Philippine, Éloi, Michelle, Olivia) — facilite le déclenchement par le modèle.
@@ -35,64 +65,7 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 - **1 skill universel** :
   - `notion-document-router` — upload Drive automatique + fiche maître Notion + propagation aux bases dérivées
 
-- **5 skills daily watch** :
-  - `cockpit-philippe-watch` (Pauline → état sprint angle PO)
-  - `cessions-watch` (Olivia → cessions en attente signature)
-  - `contrats-watch` (Olivia → contrats à triager)
-  - `pipeline-sponsors-watch` (Éloi → deals chauds, relances en retard)
-  - `prospects-congres-watch` (Michelle → congrès dentaires à relancer)
-
-- **2 skills paramétrés multi-voix** :
-  - `mail-rediger` — drafte mail dans la voix de l'humain (6 voix)
-  - `prep-reunion` — brief 1 page pré-réunion (7 humains)
-
-- **2 skills sync & arbitrage** :
-  - `sync-binome-prep` — prep sync hebdo Paul + Julien
-  - `arbitrage-tri` — triage inbox arbitrages
-
-- **5 skills Kit Philippine (CTO + BA)** :
-  - `sprint-status-philippe`, `bug-triage-cto`, `commit-message-helper`, `prep-sprint-planning`, `prep-comite-mentor-ba`
-
-- **3 skills communication coord & PRD** :
-  - `trinome-comm-coord`, `point-paul-hebdo`, `prd-pauline`
-
-- **2 skills Comité Mentor** :
-  - `comite-mentor-prep` (Pauline → questions stratégiques Paul)
-  - `comite-mentor-synthese-1p` (Julie → synthèse 1 page envoyée à Philippe 48h avant)
-
-- **2 skills gardiens validation** :
-  - `validation-message-sponsor` (Michelle → pertinence métier dentaire)
-  - `validation-legale-message` (Olivia → RGPD + santé publique + droits + RC pro)
-
-- **1 skill escalation** :
-  - `escalation-paul-check` (Olivia → vérification critères avant signature)
-
-- **3 skills mutualisés universels** :
-  - `recrutement-screener`, `roadmap-orga-update`, `decision-doc-paul-julien`
-
-- **4 skills missions 🔴 actuelles** :
-  - `compta-setup-phase2`, `etude-4p`, `process-suivi-client`, `identite-agoralive`
-
-- **3 skills cycle mensuel** :
-  - `echeances-legales-mensuel`, `note-mensuelle-paul`, `kpi-mensuel-update`
-
-- **2 skills Philippine BA finale** :
-  - `bp-challenge-philippe`, `analyse-runway`
-
-- **4 skills Julie complétion** :
-  - `bp-alignment-pipeline`, `pipeline-pilote`, `onboarding-client`, `mail-signature-design`
-
-- **4 skills Éloi complétion** :
-  - `linkedin-pro-agoralive-setup`, `package-salaries-design`, `pitch-sponsor-iterator`, `analyse-conversion-sponsor`
-
-- **2 skills Michelle complétion** :
-  - `approche-congres-strategie`, `nouveau-president-contact`
-
-- **2 skills Olivia audits** :
-  - `audit-rgpd`, `audit-code-sante-publique`
-
-- **2 skills Pauline complétion** :
-  - `pitch-deck-iterator`, `okr-trimestre-review`
+- **49 skills métier opérationnels** (cf. README agoralive-core pour la liste par catégorie)
 
 - **Page Notion** : `🚀 Bienvenue chez AgoraLive` (onboarding 60 secondes pour chaque membre)
 - **Home Notion AgoraLive** : refonte (section AVANT TOUT remplacée par la nouvelle section jumeaux + callouts équipe enrichis)
@@ -105,18 +78,17 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 
 - **MAJOR (X.0.0)** — changement breaking (suppression de skill, renommage, changement architecture plugin)
 - **MINOR (0.X.0)** — ajout de nouveaux skills ou refactor majeur sans breaking
-- **PATCH (0.0.X)** — bugfix, ajustements descriptifs, corrections triggers
+- **PATCH (0.0.X)** — bugfix, ajustements descriptifs, corrections triggers, validation technique
 
 ## À venir (roadmap)
 
-- Skills additionnels identifiés (à valider) :
+- **Sprint 4 (skills manquants)** — à valider avec le terrain :
   - `inbox-mail-triage` (tri mails entrants)
   - `calendar-conflict-detector` (détection conflits agenda)
   - `nps-tracker` (suivi NPS dans la durée)
   - `newsletter-content` (production newsletter mensuelle)
-  - `concurrence-veille-update` (brief mensuel veille)
-  - `notion-orphans-clean` (hygiène bases Notion)
-- Améliorations qualité :
-  - Validation Notion IDs (script automatique)
-  - Documentation `Comment contribuer` dans le plugin
-  - Tests / exemples de cas-types par skill
+  - `concurrence-veille-update` (brief mensuel veille concurrentielle)
+  - `notion-orphans-clean` (hygiène bases Notion : doublons, statuts incohérents)
+  - `slack-summary-daily` (si Slack intégré)
+- **Cas particuliers** à compléter sur les ~25 skills qui en manquent encore.
+- **Examples typiques** à ajouter aux skills métier (au-delà des jumeaux qui les ont déjà).
