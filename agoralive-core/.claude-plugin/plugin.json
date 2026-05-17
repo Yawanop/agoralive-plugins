@@ -1,10 +1,10 @@
 {
   "name": "agoralive-core",
-  "version": "0.1.0",
-  "description": "Skills universels AgoraLive — routing de documents Notion+Drive, planification, utilitaires partagés par toute l'équipe",
+  "version": "0.2.0",
+  "description": "Skills universels AgoraLive — 6 jumeaux personnels (Pauline, Julie, Philippine, Éloi, Michelle, Olivia) + 49 skills métier opérationnels. Routing Notion+Drive, planification, validation gardiens, escalation, rituels Comité Mentor.",
   "author": {
     "name": "Paul Boury",
     "email": "paulboury1@gmail.com"
   },
-  "keywords": ["agoralive", "notion", "drive", "routing", "internal"]
+  "keywords": ["agoralive", "notion", "drive", "routing", "internal", "jumeaux", "concierge"]
 }

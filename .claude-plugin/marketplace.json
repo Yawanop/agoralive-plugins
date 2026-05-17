@@ -4,13 +4,13 @@
     "name": "Paul Boury",
     "email": "paulboury1@gmail.com"
   },
-  "description": "Marketplace interne AgoraLive — skills et plugins partagés par l'équipe (Notion routing, contrats, bugs PO, articles SFODF, etc.)",
+  "description": "Marketplace interne AgoraLive — skills et plugins partagés par l'équipe (Notion routing, contrats, bugs PO, articles SFODF, 6 jumeaux personnels et 49 skills métier)",
   "plugins": [
     {
       "name": "agoralive-core",
       "source": "./agoralive-core",
-      "description": "Skills universels AgoraLive — routing de documents Notion+Drive, planification, utilitaires partagés par toute l'équipe",
-      "version": "0.1.0"
+      "description": "Plugin universel installé par toute l'équipe. 6 jumeaux personnels (Pauline, Julie, Philippine, Éloi, Michelle, Olivia) + 49 skills métier opérationnels. Routing Notion+Drive Drive-aware, rituels Comité Mentor, gardiens validation, escalation.",
+      "version": "0.2.0"
     }
   ]
 }
