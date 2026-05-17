@@ -1,0 +1,10 @@
+{
+  "name": "agoralive-core",
+  "version": "0.1.0",
+  "description": "Skills universels AgoraLive — routing de documents Notion+Drive, planification, utilitaires partagés par toute l'équipe",
+  "author": {
+    "name": "Paul Boury",
+    "email": "paulboury1@gmail.com"
+  },
+  "keywords": ["agoralive", "notion", "drive", "routing", "internal"]
+}

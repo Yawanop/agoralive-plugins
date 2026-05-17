@@ -1,0 +1,16 @@
+{
+  "name": "agoralive-plugins",
+  "owner": {
+    "name": "Paul Boury",
+    "email": "paulboury1@gmail.com"
+  },
+  "description": "Marketplace interne AgoraLive — skills et plugins partagés par l'équipe (Notion routing, contrats, bugs PO, articles SFODF, etc.)",
+  "plugins": [
+    {
+      "name": "agoralive-core",
+      "source": "./agoralive-core",
+      "description": "Skills universels AgoraLive — routing de documents Notion+Drive, planification, utilitaires partagés par toute l'équipe",
+      "version": "0.1.0"
+    }
+  ]
+}
