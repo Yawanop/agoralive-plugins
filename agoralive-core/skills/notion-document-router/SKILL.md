@@ -85,18 +85,21 @@ Trois modes possibles, à détecter selon le contexte d'invocation :
 
 ### Étape C — Table de mapping Type → Drive folder ID
 
-| Type détecté | Folder ID Drive cible | Chemin Drive lisible |
-|---|---|---|
-| `📜 Contrat` | `1P8xOntkh2pK5uEdLWtk4SS2rmi9RHoBe` | ⚖️ Légal & Admin / 📜 Contrats |
-| `📝 Cession` | `16HiT1Eb-hU6AO2iQ2dlR3DlKg11T4Qwq` | ⚖️ Légal & Admin / 📝 Cessions de droits |
-| `🐛 Bug` | `1ubsF-pQshO3arKglPe4EmjmHS4QVA-OD` | 🚀 Squad Produit / ⚙️ Dev |
-| `✍️ Article` | `1yG2YQLauoEkTa66yuEk0TejgITVQcpVf` | 📰 Édito / ✍️ Articles |
-| `👔 CV` | `1vGOP1MOBrdbRsIjBDFQOv99SV0LuIICk` | 📚 Bases partagées / 👔 Recrutement |
-| `💰 Devis sponsor` | `1eNaPPQZy25nCzs4uiE4hN12L4wvYGf7x` | 💼 Squad Vente / 📊 Pricer Sponsors |
-| `📅 Compte-rendu` | `12oZur5CwnXZn_SQK2W-WdHO1o7Hu6loC` | 📊 Tableaux de bord / 📅 Journal de bord |
-| `🖼️ Image` | `1Xavmv9Ktt08pwTpNBeVg_W9OawopRUhA` | 📣 Squad Communication / 📷 Visuels & Assets |
-| `🎙️ Audio` | `15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y` | 🎙️ Inbox Vocale (reste sur place, no-op Apps Script) |
-| `📄 PDF brut`, `📝 Transcription`, `🧾 Brief`, `❓ Autre` | `1b_Wvjdvd0_OhHV7awi6R_fEq5IWE2kK_` | 📚 Bases partagées / 📥 Documents Source (catch-all) |
+| Type détecté Notion | Sous-dossier Drive | Folder ID | Statut |
+|---|---|---|---|
+| ✍️ Article | `Articles/` | `1rF44X2PSSdxklEtYqfuh89X_dYwWpsgz` | ✅ Existant |
+| 📜 Contrat | `Contrats/` (ACL à restreindre Olivier+Paul+Julien) | `1gahtS4XqTgUZXGAky7hlzw2br9Y2AGAI` | ✅ Existant |
+| 📝 Cession | `Cessions/` (ACL à restreindre Olivier+Paul+Julien) | `1_BklMOmWZSUrHqnEwbMUzwT6JdIz4EwA` | ✅ Existant |
+| 🐛 Bug | `Bugs/` | `1lEsgCm8bMNFOQsF94NS9mwU9zalzy5s-` | ✅ Existant |
+| 👔 CV | `CV/` (ACL à restreindre RH) | `1gXePj6uqX2hpbqS_--LD5VXdulOXsENs` | ✅ Existant |
+| 💰 Devis sponsor | `Devis/` | `1fwimmJR5tN4OOwXMRPJnUHvNjDArOTmI` | ✅ Existant |
+| 📅 Compte-rendu | `Comptes-rendus/` | `1WSUuBqVBNhuJfYolhGVvyTbee8jVjEbO` | ✅ Existant |
+| 🧾 Brief | `Briefs/` | `1TN4yhN0o8JZCZvdIqoak_sp1qmJCJdT0` | ✅ Existant |
+| 🎙️ Audio | `🎙️ Inbox Vocale` (reste sur place — no-op Apps Script) | `15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y` | ✅ Existant |
+| 🖼️ Image | `Images/` | `1y0LoRLCfrY-h6800xoSJaXpEEFcFfOFU` | ✅ Existant |
+| 📝 Transcription | `Transcriptions/` | `1lZSmvne9LqoWuLNUv64cqIrthNS0ybp-` | ✅ Existant |
+| 📄 PDF brut | `PDF/` | `1ILENg2HYP9TeG-wkNylQKcsXC0Z-PZ79` | ✅ Existant |
+| ❓ Autre | `Autres/` | `1r828U69SWfKX03BdLgP9s7tmj8BTZ5RI` | ✅ Existant |
 
 ### Étape D — Anti-doublon Notion (lookup avant création)
 

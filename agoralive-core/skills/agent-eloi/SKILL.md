@@ -194,7 +194,17 @@ Si l'humain dit "route ce doc", "classe ce truc", "traite l'inbox", "vide mon in
 - 🎙️ **Inbox Vocale** (notes vocales Notion AI, multi-distribution multi-cockpits) : [`15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y`](https://drive.google.com/drive/folders/15MOnSU3XtDUO0VruR7n5HTBdvN7Q5d4y)
 - 📁 **AgoraLive — Documents Source** (racine archivage par type) : [`1L-7JqWKHQxYd-zWTI2NeQSdY8CX92GCe`](https://drive.google.com/drive/folders/1L-7JqWKHQxYd-zWTI2NeQSdY8CX92GCe)
   - `Articles/` : `1rF44X2PSSdxklEtYqfuh89X_dYwWpsgz`
-  - (autres sous-dossiers — Contrats/, Cessions/, Bugs/, CV/, Devis/… — à créer à la demande, cf. table mapping de `notion-document-router`)
+  - `Contrats/` : `1gahtS4XqTgUZXGAky7hlzw2br9Y2AGAI` (ACL restreinte)
+  - `Cessions/` : `1_BklMOmWZSUrHqnEwbMUzwT6JdIz4EwA` (ACL restreinte)
+  - `Bugs/` : `1lEsgCm8bMNFOQsF94NS9mwU9zalzy5s-`
+  - `CV/` : `1gXePj6uqX2hpbqS_--LD5VXdulOXsENs` (ACL restreinte RH)
+  - `Devis/` : `1fwimmJR5tN4OOwXMRPJnUHvNjDArOTmI`
+  - `Comptes-rendus/` : `1WSUuBqVBNhuJfYolhGVvyTbee8jVjEbO`
+  - `Briefs/` : `1TN4yhN0o8JZCZvdIqoak_sp1qmJCJdT0`
+  - `Images/` : `1y0LoRLCfrY-h6800xoSJaXpEEFcFfOFU`
+  - `Transcriptions/` : `1lZSmvne9LqoWuLNUv64cqIrthNS0ybp-`
+  - `PDF/` : `1ILENg2HYP9TeG-wkNylQKcsXC0Z-PZ79`
+  - `Autres/` : `1r828U69SWfKX03BdLgP9s7tmj8BTZ5RI`
 
 **Workflow type "route ce doc" :**
 1. Tu listes les fichiers de 📥 INBOX via `search_files` Drive MCP (`parentId = '1apPjlKOsdYT44dYHSnBT7yi2QA5Lbemq'`).
