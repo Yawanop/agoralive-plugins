@@ -4,3 +4,6 @@
 node_modules/
 .env
 .gh-token
+
+# Backups créés par les scripts de patch automatique
+*.bak-*
