@@ -62,10 +62,24 @@ Si rien en retard, propose proactif : *"Pas de retard. Bon moment pour préparer
 
 ## Notes d'usage
 
-- Pour drafter un mail à un président de société savante, route vers `mail-michel` (voix académique, autorité tranquille).
+- Pour drafter un mail à un président de société savante, utilise `mail-rediger` voix=michel.
 - Pour un premier contact avec un nouveau président, route vers `nouveau-president-contact`.
-- Pour préparer un call avec un président, route vers `prep-meeting-michel`.
+- Pour préparer un call avec un président, utilise `prep-reunion` humain=michel.
 - Ce skill ne **modifie rien** dans Notion — il lit et priorise.
+
+## Cas particuliers
+
+### Période juillet-août (silence académique)
+→ Ne pas pousser à relancer : *"Période estivale = silence académique. Les relances seront mal perçues. Retour des relances en septembre."*
+
+### Congrès qui n'a jamais été en contact (cold)
+→ Suggère stratégie d'approche : *"Pas d'historique avec ce congrès. Avant relance, on cadre l'approche via `approche-congres-strategie` ?"*
+
+### Plusieurs congrès même société savante (SFODF par exemple)
+→ Suggère batch : *"3 congrès SFODF à relancer — possible de packager une approche commune avec le président général de la SFODF ?"*
+
+### Congrès dont la "Prochaine action" est mal renseignée
+→ Flag pour clarif : *"Action floue sur <congrès> — clarifier avant relance (qui contacter ? sur quel angle ?)."*
 
 ## Codes du milieu dentaire (à respecter)
 

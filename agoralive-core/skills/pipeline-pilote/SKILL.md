@@ -1,12 +1,15 @@
 ---
 name: pipeline-pilote
 description: >
-  Vue de pilotage du pipeline congrès + sponsors pour Julie (Julien) — angle DG.
-  Différent de pipeline-sponsors-watch (qui est l'angle commercial daily d'Éloïse).
-  Ici : vue agrégée (CA pipeline pondéré, deals chauds, vélocité, deals qui dérivent,
-  alertes), comparée au ramp BP, avec recommandations stratégiques. À déclencher
-  quand Julien (ou Julie) demande : "où en est le pipeline", "Julie pipeline",
-  "vue commerciale", "qu'est-ce qui chauffe côté commercial".
+  Vue de pilotage stratégique HEBDO/MENSUEL du pipeline congrès + sponsors pour
+  JULIE (Julien) — ANGLE DG : CA pipeline pondéré, vélocité, deals qui dérivent,
+  comparaison au ramp BP, recommandations pour decision-doc-paul-julien. À
+  déclencher quand Julien (ou Julie) demande : "où en est le pipeline (vue
+  stratégique)", "Julie pipeline", "vue commerciale DG", "qu'est-ce qui se
+  passe globalement côté commercial", "alignement pipeline / BP". DIFFÉRENT de
+  pipeline-sponsors-watch (Éloi, angle COMMERCIAL DAILY : qui rappeler aujourd'hui,
+  deals chauds opérationnels) : si Éloïse ou Éloi demande qui rappeler ou les
+  relances du jour, invoquer pipeline-sponsors-watch à la place.
 ---
 
 # pipeline-pilote — Vue de pilotage pipeline pour Julien (DG)

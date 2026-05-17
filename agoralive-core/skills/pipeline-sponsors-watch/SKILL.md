@@ -1,14 +1,15 @@
 ---
 name: pipeline-sponsors-watch
 description: >
-  Brief daily du pipeline sponsors pour Éloïse (Directrice Commerciale). Ouvre le
-  hub Commercial Notion, identifie les deals chauds à pousser aujourd'hui, les
-  relances en retard, les sponsors en attente de validation trinôme Comm, et
-  restitue un brief court actionnable avec une recommandation de "qui appeler en
-  premier". À déclencher quand Éloïse (ou son jumeau Éloi) demande : "qui je
-  rappelle aujourd'hui", "pipeline du jour", "mes deals chauds", "Éloi pipeline",
-  "qu'est-ce qui chauffe côté commercial". Skill mutualisable : Julien (DG) ou
-  Paul peuvent l'invoquer pour suivi pipeline.
+  Brief DAILY OPÉRATIONNEL du pipeline sponsors pour ÉLOÏSE (Directrice Commerciale).
+  Ouvre le hub Commercial Notion, identifie les deals chauds à pousser AUJOURD'HUI,
+  les relances en retard, les sponsors en attente de validation trinôme Comm.
+  Recommandation "qui appeler en premier". À déclencher quand Éloïse (ou Éloi)
+  demande : "qui je rappelle aujourd'hui", "pipeline du jour", "mes deals chauds",
+  "Éloi pipeline", "Éloi qui je rappelle", "relances à pousser". DIFFÉRENT de
+  pipeline-pilote (Julie, angle DG STRATÉGIQUE HEBDO/MENSUEL : CA pondéré, vélocité,
+  alignement BP) : si Julien ou Julie demande la vue stratégique, invoquer
+  pipeline-pilote à la place.
 ---
 
 # pipeline-sponsors-watch — Brief daily commercial pour Éloïse
@@ -54,10 +55,24 @@ Si tout est calme, propose une action proactive : *"Pipeline au calme — bon mo
 
 ## Notes d'usage
 
-- Pour drafter un mail de relance, route vers `mail-commercial-eloise` avec la voix d'Éloïse.
-- Pour préparer un call sponsor en détail, route vers `prep-meeting-eloise`.
+- Pour drafter un mail de relance, utilise `mail-rediger` voix=eloise.
+- Pour préparer un call sponsor en détail, utilise `prep-reunion` humain=eloise.
 - Si une validation trinôme est nécessaire, route vers `trinome-comm-coord`.
 - Ce skill ne **modifie rien** dans Notion — il lit et restitue.
+
+## Cas particuliers
+
+### Pipeline complètement vide (cas anormal)
+→ Flag explicite : *"⚠️ Pipeline vide aujourd'hui. À investiguer rapidement avec Julien et Michel — pas un calme normal."*
+
+### Beaucoup de deals chauds (>5 à pousser aujourd'hui)
+→ Range par priorité : *"5 deals chauds — top 3 par valeur attendue : <liste>. Tu attaques par celui-ci en premier ?"*
+
+### Sponsor en attente de validation trinôme depuis >5 jours
+→ Flag : *"⚠️ Validation trinôme bloquée depuis 6j sur <sponsor>. Tu relances Michel ou Olivier ?"*
+
+### Sponsor répété (deal perdu déjà, on retente)
+→ Note de prudence : *"Sponsor déjà perdu en 2025. Vérifier raisons avant de re-pitcher — peut-être nouvel angle nécessaire."*
 
 ## Vocabulaire commercial (pour cohérence du brief)
 

@@ -1,15 +1,15 @@
 ---
 name: cockpit-philippe-watch
 description: >
-  Brief daily du sprint Philippe (CTO) à destination de Paul (PO). Ouvre le Cockpit
-  Philippe CTO Notion, identifie les bugs P0/P1 actifs, les bugs à retester par
-  Paul (statut 👀 À retester), les FRs bloqués, les bugs orphelins (sans FR à
-  associer), et restitue un brief court actionnable pour Paul. À déclencher quand
-  Paul (ou sa jumelle Pauline) demande : "où en est Philippe", "fais le tour du
-  sprint", "qu'est-ce qui chauffe côté dev", "brief sprint", "Philippe a livré
-  quoi", "qu'est-ce que je dois retester", "Pauline regarde où en est le sprint".
-  Skill mutualisable : Julien peut aussi l'invoquer via Julie pour sync sprint
-  planning.
+  Brief daily du sprint Philippe (CTO) à destination de PAUL (PO) — ANGLE PO :
+  ce que PAUL doit retester / valider / trier (bugs orphelins, routes à valider,
+  FRs bloqués, livrés en attente retest Paul). À déclencher quand Paul (ou
+  Pauline) demande : "où en est Philippe", "fais le tour du sprint", "qu'est-ce
+  qui chauffe côté dev", "Pauline regarde où en est le sprint", "qu'est-ce que je
+  dois retester", "Philippe a livré quoi". DIFFÉRENT de sprint-status-philippe
+  (angle CTO Philippe, ce que PHILIPPE doit prendre) : si Philippe ou Philippine
+  demande "brief le sprint pour moi", invoquer sprint-status-philippe à la place.
+  Skill mutualisable : Julie peut aussi l'invoquer pour sync sprint planning.
 ---
 
 # cockpit-philippe-watch — Brief sprint pour Paul (PO)
@@ -60,6 +60,20 @@ Si les 4 segments sont vides, dis-le franchement : *"Sprint au vert, Philippe av
 - Ce skill ne **modifie rien** dans Notion — il lit et restitue.
 - Pour traiter un bug en particulier (retest, validation, fermeture), bascule sur `po-bug-agoralive`.
 - Pour la vue stratégique BA de Philippe (KPI, BP, runway), utilise le cockpit Mentor BA, pas celui-ci.
+
+## Cas particuliers
+
+### Sprint au vert (rien à retester, pas de bug P0/P1)
+→ Dis-le franchement : *"Sprint au vert. Philippe avance, rien ne t'attend, profite."*
+
+### Trop de bugs à retester (>5)
+→ Flag : *"⚠️ 7 bugs à retester depuis >7 jours — bloque la fluidité du sprint. Tu prends 30 min cet aprèm ?"*
+
+### Cockpit Philippe inaccessible (page vide, droits manquants)
+→ Dis-le franchement : *"Cockpit Philippe pas accessible. Vérifie tes droits Notion ou ping Philippe."*
+
+### Confusion d'angle (Paul demande "où Philippe en est" mais veut son brief CTO perso)
+→ Demande clarif : *"Tu veux l'angle PO (ce que tu dois retester) ou l'angle CTO (ce que Philippe doit prendre) ?"*. Si CTO → bascule sur `sprint-status-philippe`.
 
 ## Identifiants Notion utiles
 

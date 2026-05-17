@@ -1,14 +1,14 @@
 ---
 name: sprint-status-philippe
 description: >
-  Brief daily du sprint pour Philippe (CTO), angle dev. Ouvre le Cockpit Philippe
-  CTO Notion, identifie ce qu'il doit prendre maintenant (prochaine carte P0 → P3),
-  ce qu'il a livré et qui attend retest Paul, sa charge actuelle vs capacité, et
-  les FRs à clarifier. À déclencher quand Philippe (ou Philippine) demande : "brief
-  le sprint", "où on en est", "ce que je dois prendre", "Philippine quoi de neuf
-  côté sprint", "qu'est-ce qui chauffe pour moi", "Philippine sprint-moi".
-  Complémentaire de cockpit-philippe-watch (qui donne l'angle PO Paul) — ce
-  skill-ci donne l'angle CTO Philippe.
+  Brief daily du sprint pour PHILIPPE (CTO), ANGLE DEV — ce qu'il doit prendre
+  maintenant, ce qu'il a livré, sa charge vs capacité, FRs à clarifier. À
+  déclencher UNIQUEMENT quand Philippe (ou Philippine) demande : "brief le sprint
+  pour moi", "qu'est-ce que JE dois prendre", "Philippine quoi de neuf côté
+  sprint", "Philippine sprint-moi", "ma file dev". DIFFÉRENT de
+  cockpit-philippe-watch (angle PO Paul, ce que PAUL doit retester / valider) :
+  si Paul ou Pauline demande "où en est Philippe", invoquer cockpit-philippe-watch
+  à la place. Anti-trigger : tout prompt qui vient de Paul/Pauline.
 ---
 
 # sprint-status-philippe — Brief sprint pour Philippe (CTO)

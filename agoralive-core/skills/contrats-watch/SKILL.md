@@ -60,9 +60,23 @@ Si rien à traiter : *"Contrats à jour, pas de triage en attente."*
 
 ## Notes d'usage
 
-- Pour vraiment **viser** un contrat (verdict GREEN/YELLOW/RED + fiche Notion), route vers `triage-contrat-agoralive` qui existe déjà.
-- Pour vérifier formellement les critères d'escalation Paul, utilise `escalation-paul-check` (skill à construire).
+- Pour vraiment **viser** un contrat (verdict GREEN/YELLOW/RED + fiche Notion), route vers `triage-contrat-agoralive`.
+- Pour vérifier formellement les critères d'escalation Paul, utilise `escalation-paul-check`.
 - Ce skill ne **modifie rien** dans Notion — il lit et priorise.
+
+## Cas particuliers
+
+### Aucun contrat à traiter
+→ Dis-le : *"Rien à triager côté contrats. Bon moment pour avancer sur Phase 2 Compta ou autre chantier."*
+
+### Beaucoup de contrats en escalation potentielle (>3)
+→ Flag pour batch : *"⚠️ 4 contrats en escalation potentielle. Suggère un sync 30 min avec Paul pour les trancher en bloc."*
+
+### Contrat très urgent (deadline <48h)
+→ Flag visible en tête de brief : *"🔥 URGENT : contrat SFCD à signer avant vendredi 18h. Triage prioritaire."*
+
+### Contrat sponsor de fabricant de dispositif médical
+→ Note de vigilance : *"Sponsor dispositif médical → vérifier cohérence métier (ping Michel via `trinome-comm-coord`) AVANT triage légal."*
 
 ## Critères d'escalation à Paul (à graver)
 

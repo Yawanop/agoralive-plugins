@@ -54,9 +54,23 @@ Si tout est récent, dis-le : *"Cessions à jour, rien à relancer ce matin."*
 
 ## Notes d'usage
 
-- Pour drafter le mail de relance, route vers `relance-signature` (skill à construire) ou utilise `mail-olivier` avec la voix juridique sobre.
+- Pour drafter le mail de relance, utilise `mail-rediger` voix=olivier.
 - Si une cession dépasse les 30 jours sans signature → possiblement à escalader à Paul (l'intervenant pose problème, ou il faut renégocier).
 - Ce skill ne **modifie rien** dans Notion — il lit et restitue.
+
+## Cas particuliers
+
+### Aucune cession en attente
+→ Dis-le franchement : *"Cessions à jour. Rien à relancer ce matin."*
+
+### Cession >30 jours sans réponse
+→ Flag escalation : *"⚠️ Cession Pr X envoyée il y a 32 jours sans retour. Possible problème — escalade Paul ou pivot stratégie (autre intervenant pour cette conférence)."*
+
+### Cession liée à un congrès qui approche (<14j)
+→ Flag urgent : *"⚠️ Cession Pr Y manquante pour congrès dans 12 jours. Relance ferme nécessaire OU plan B."*
+
+### Plusieurs cessions chez le même intervenant
+→ Note : *"3 cessions ouvertes chez Pr Z — vérifier s'il y a un blocage relationnel ou logistique commun."*
 
 ## Identifiants Notion utiles
 
