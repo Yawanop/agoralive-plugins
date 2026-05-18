@@ -33,10 +33,9 @@ Appelle `notion-fetch` sur **Mon cockpit — Paul** : `https://www.notion.so/361
 
 Si la page renvoie un cockpit vide ou incomplet, dis-le franchement à Paul plutôt que d'inventer.
 
-### Étape 2 — Récupère ses pings et ses tâches
+### Étape 2 — Récupère son inbox vocal
 
-- 📨 **Pings reçus** (filtre Notion = tag Paul)
-- ✅ **Tâches à faire** (filtre Notion = owner Paul)
+- 🎙️ **Inbox Vocal** (filtre `Pour CONTAINS Paul OR Pour vide`, hors Statut `Traité`) — canal unique de communication AgoraLive depuis le pivot du 18 mai 2026
 - 🌅 **Priorités du jour** (lignes "Paul" dans Roadmap Organisation : `3606979fbcd181d38416c267df9943bf`)
 
 ### Étape 3 — Brief en 5 lignes
