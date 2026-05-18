@@ -34,9 +34,8 @@ Si manque → suppose le dirigeant qui invoque + portée par défaut "tout en at
 
 Va chercher dans :
 
-1. **📨 Pings & questions** (data source `03837509-4c7e-4a3a-a63c-fe8c7f6ad43e`) — filtre tag humain + type "arbitrage" ou "décision attendue"
-2. **✅ Mes tâches** (data source `f4f01b9a-a57e-41f4-9947-9c2258080d20`) — filtre owner humain + statut "à arbitrer"
-3. **Commentaires Notion** dans les hubs (Direction, Légal, Commercial, RH) qui mentionnent l'humain comme arbitre
+1. **🎙️ Inbox Vocal** (data source `5fcf5b4e-c35f-4da9-9290-68e17a0c63de`) — canal unique de communication depuis le pivot du 18 mai 2026. Filtre : `Pour CONTAINS humain` AND `Statut != Traité` AND `Type détecté IN [Décision, Question, Tâche]`. Les notes avec `Pour` vide sont des broadcasts à tout le monde — à inclure aussi.
+2. **Commentaires Notion** dans les hubs (Direction, Légal, Commercial, RH) qui mentionnent l'humain comme arbitre
 
 Restitue la liste brute avant de trier — pour que l'humain valide le périmètre.
 
@@ -127,8 +126,8 @@ Quatre routes possibles, à choisir :
 
 - 🦊 Cockpit Paul : `3616979fbcd18186bf48cb87faa13af3`
 - 🐺 Cockpit Julien : `3616979fbcd181b8bb90f8ab0985ef39`
-- 📨 Pings & questions : data source `03837509-4c7e-4a3a-a63c-fe8c7f6ad43e`
-- ✅ Mes tâches : data source `f4f01b9a-a57e-41f4-9947-9c2258080d20`
+- 🎙️ Inbox Vocal : data source `5fcf5b4e-c35f-4da9-9290-68e17a0c63de` (canal unique post-pivot 18 mai 2026)
+- 🗄️ Bases archivées (lecture seule, ne plus utiliser) : `[Archive] 📨 Pings & questions` `03837509-4c7e-4a3a-a63c-fe8c7f6ad43e` + `[Archive] ✅ Mes tâches` `f4f01b9a-a57e-41f4-9947-9c2258080d20`
 - 🧠 Comité Mentor Philippe Salah : `35e6979fbcd181569dc6c3cc418d6774`
 - ⚖️ Légal & Finance (escalations) : `35e6979fbcd18116a3e4e5638feaf5ec`
 - 🧭 Direction : `35e6979fbcd181cbbb32eec0b388dd15`
