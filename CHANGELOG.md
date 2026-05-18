@@ -5,6 +5,19 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 
 ---
 
+## [0.4.2] — 2026-05-19
+
+### Added
+
+- **Routing `enrichir-contact` ajouté aux 6 jumeaux** (Pauline, Julie, Éloi, Michelle, Olivia, Philippine). Chaque agent voit désormais le skill dans sa description frontmatter, sa table de routing ("Si X dit / mentionne… | Tu invoques…"), et son tableau de présentation sur demande. Trigger phrase recommandée : *"Pauline enrichis [Nom]"* (substituer le jumeau approprié selon l'humain). Counts mis à jour : Pauline 17→18, Julie 16→17, Éloi 15→16, Michelle 11→12, Olivia 16→17, Philippine 12→13.
+
+### Notes
+
+- **Pas de modification du skill `enrichir-contact` lui-même** — uniquement l'ajout de routes côté jumeaux. Le pipeline était fonctionnel en 0.4.1, mais nécessitait de bypasser Pauline pour l'invoquer.
+- **Catégorie d'affichage** : `👔 Transverse RH/ops` (cohérent avec `recrutement-screener` et `roadmap-orga-update`, autres skills mutualisés inter-jumeaux).
+
+---
+
 ## [0.4.1] — 2026-05-19
 
 ### Added
