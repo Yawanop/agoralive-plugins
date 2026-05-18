@@ -103,7 +103,7 @@ Vérifie si certaines pièces vitales sont absentes ou périmées :
 ### Étape 5 — Mise à jour Notion + diffusion
 
 Si Olivier valide :
-- Ajoute les échéances comme tâches dans `✅ Mes tâches` (filtre Olivier)
+- Ajoute les échéances comme notes dans `🎙️ Inbox Vocal` (data source `5fcf5b4e-c35f-4da9-9290-68e17a0c63de`) avec Type détecté = `Tâche`, Pour = `Olivier`, Statut = `À traiter`
 - Met une note dans son cockpit pour visibilité
 - Si une échéance touche le BP (paiement IS, etc.) → ping Julien via `mail-rediger` voix olivier
 
