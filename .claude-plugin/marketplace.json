@@ -10,7 +10,7 @@
       "name": "agoralive-core",
       "source": "./agoralive-core",
       "description": "Plugin universel installé par toute l'équipe. 6 jumeaux personnels (Pauline, Julie, Philippine, Éloi, Michelle, Olivia) + 49 skills métier opérationnels. Routing Notion+Drive Drive-aware, rituels Comité Mentor, gardiens validation, escalation.",
-      "version": "0.4.0"
+      "version": "0.4.1"
     }
   ]
 }

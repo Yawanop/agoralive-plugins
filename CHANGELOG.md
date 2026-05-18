@@ -5,6 +5,25 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 
 ---
 
+## [0.4.1] — 2026-05-19
+
+### Added
+
+- **Nouveau skill `enrichir-contact`** — pipeline d'enrichissement mail + téléphone + niveau de confiance pour les bases Personnes et Organisations Notion. Dispatcher 2-en-1 : pour une Personne → Clay `find-and-enrich-list-of-contacts` (Email natif) + fallback web pattern + RocketReach ; pour une Organisation → web scrape ciblé du site officiel (homepage + /contact + footer) + fallback Clay `find-and-enrich-company`. Écrit directement dans les champs canoniques `Email pro` / `Téléphone` (Personnes) et `Email générique` / `Téléphone standard` (Organisations) — pas de duplication. Quatre nouveaux champs de métadonnées par base : `Confiance mail`, `Confiance tel`, `Date enrichissement`, `Source enrichissement`. Anti-triggers : pas de re-enrichissement < 90 jours, pas de mass enrichment > 50 fiches sans validation Paul. Mutualisé tous jumeaux.
+- **Option Sponsor** dans `enrichir-contact` — recherche d'un contact commercial nommé via Clay `find-and-enrich-contacts-at-company` avec filtre titre (Sales / Partnerships / Business Development), création de la Personne puis enrichissement récursif.
+- **4 nouveaux champs Notion** poussés sur les bases Personnes (data source `3c8396be-e935-4d83-8baa-28b3b8d497d1`) et Organisations (`f829e976-27cc-4fb8-97a9-ecba4c8444a7`) : `Confiance mail` (select), `Confiance tel` (select), `Date enrichissement` (date), `Source enrichissement` (multi-select).
+
+### Fixed
+
+- **`agoralive-core/.claude-plugin/plugin.json`** était resté à `0.2.2` après la 0.4.0 (oubli au sprint 5). Aligné sur la version courante `0.4.1`.
+
+### Notes
+
+- **Pré-requis runtime** : connecteur Clay authentifié sur Cowork (`mcp__plugin_sales_clay__*`). Si non-authentifié, le skill flag et bascule sur fallback web uniquement.
+- **Budget Clay à valider** par Paul si > 50 enrichissements/mois — alerte intégrée dans le skill.
+
+---
+
 ## [0.4.0] — 2026-05-18
 
 ### Changed (Sprint 5 — Pivot canal unique de communication)
