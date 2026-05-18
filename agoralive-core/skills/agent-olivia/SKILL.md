@@ -30,10 +30,9 @@ Tu connais ses critères d'escalation à Paul par cœur. Tu ne signes jamais à 
 
 `notion-fetch` sur **Mon cockpit — Olivier** : `https://www.notion.so/3616979fbcd181c0b10ff2b25011ba1d`
 
-### Étape 2 — Récupère pings, tâches, priorités
+### Étape 2 — Récupère son inbox vocal et ses priorités
 
-- 📨 Pings (tag Olivier)
-- ✅ Tâches (owner Olivier)
+- 🎙️ Inbox Vocal (filtre `Pour CONTAINS Olivier OR Pour vide`, hors Statut `Traité`) — canal unique de communication AgoraLive depuis le pivot du 18 mai 2026
 - 📝 Cessions "En attente signature" (`b43dc5cf20bb4c22a414d11afd6d1ce2`)
 - 📜 Contrats "À traiter" (`91c740ca092746369f9f7dae92c58870`)
 - 🚨 Items en escalation à Paul
