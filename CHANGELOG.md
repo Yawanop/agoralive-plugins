@@ -5,6 +5,32 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 
 ---
 
+## [0.4.0] — 2026-05-18
+
+### Changed (Sprint 5 — Pivot canal unique de communication)
+
+- **Inbox Vocal devient le canal unique de communication AgoraLive.** Les bases `📨 Pings & questions` et `✅ Mes tâches` ont été archivées sous `🗄️ Archive — bases obsolètes` côté Notion. Tous les pings, tâches, questions, décisions et infos transitent désormais par la base `🎙️ Inbox Vocal` (data source `5fcf5b4e-c35f-4da9-9290-68e17a0c63de`).
+- **Propriété `Pour` (multi-select)** ajoutée à Inbox Vocal — pilote l'affichage par destinataire sur les cockpits. Options : Paul · Julien · Éloïse · Michel · Olivier · Philippe. Vide = broadcast à tout le monde.
+- **Propriété `Statut` convertie de `status` à `select`** pour permettre le filtre DSL `!= "Traité"`. Les 3 options (À traiter / En cours / Traité) restent inchangées côté UX.
+- **Refactor des 7 cockpits** (Paul, Julien, Éloïse, Michel, Olivier, Philippe CTO, Philippe BA) : remplacement des inline databases `Pings & questions` + `Mes tâches` par une vue gallery `🎙️ Mon inbox vocal` en tête, filtrée `(Pour CONTAINS owner OR Pour IS EMPTY) AND Statut != Traité`. Note marquée `Traité` disparaît automatiquement de tous les cockpits.
+- **Auto-détection du destinataire** documentée dans `notion-document-router` — patterns `Pour <prénom>`, `Hey <prénom>`, `Demande à <prénom>`, etc. avec variations d'accent/casse et multi-destinataires.
+
+### Patched (skills mis à jour)
+
+- `notion-document-router` — nouvelle section "Routing addressé via la base Notion 🎙️ Inbox Vocal" + entrée v3 historique.
+- `agent-pauline`, `agent-julie`, `agent-eloi`, `agent-michelle`, `agent-olivia`, `agent-philippine` — Étape 2 (récupération inbox cockpit) redirigée de Pings/Tâches vers Inbox Vocal.
+- `arbitrage-tri` — Étape 1 réécrite pour lire depuis Inbox Vocal au lieu des deux bases archivées. Identifiants Notion mis à jour.
+- `echeances-legales-mensuel` — création des tâches d'échéance dans Inbox Vocal (Type=Tâche, Pour=Olivier) au lieu de l'ancienne base Mes tâches.
+
+### Notes
+
+- **Aucune migration d'items en cours nécessaire** : audit du 18/05/2026 → 0 tâche ouverte, 1 ping résolu (à archiver tel quel).
+- **Les bases archivées restent consultables en lecture** sous `🗄️ Archive — bases obsolètes` pour la traçabilité. Ne plus y créer de nouveaux items.
+- **Skills opérationnels (`mail-rediger`, `prep-reunion`, watch quotidiens) non touchés** : ils ne créent pas de pings/tâches directement, donc pas de patch nécessaire dans ce sprint. À surveiller si un comportement émerge.
+- **Bump version manifest** : `agoralive-core` passe de `0.2.2` à `0.4.0` (la 0.3.0 était une "spec phase" sans skill modifié).
+
+---
+
 ## [0.3.0] — 2026-05-18
 
 ### Added (Sprint 4 — Industrialisation Jumeaux — spec phase)
