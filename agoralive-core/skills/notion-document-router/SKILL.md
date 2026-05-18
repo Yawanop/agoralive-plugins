@@ -218,7 +218,93 @@ Pour qu'un nouvel humain (Julie, Éloi, Michelle, Olivia, Philippine, ou futur j
 2. Avoir le plugin `agoralive-core` installé dans Cowork (`claude plugin install agoralive-core@agoralive-plugins`)
 3. C'est tout. L'infrastructure (Apps Script, SA GCP, Notion integration, dossiers Drive) est mutualisée et déjà en place.
 
+## Routing addressé via la base Notion `🎙️ Inbox Vocal`
+
+> **Pivot du 18 mai 2026 — canal unique.** Les bases `📨 Pings & questions` et `✅ Mes tâches` ont été archivées sous `🗄️ Archive — bases obsolètes`. **Toute la communication async AgoraLive** (pings, tâches, questions, décisions, infos) transite désormais par la base Notion `🎙️ Inbox Vocal` (data source `5fcf5b4e-c35f-4da9-9290-68e17a0c63de`, page `8aaf4d2cb5a14cd480ffca989ace22a4`).
+
+Cette base est **distincte** du dossier Drive `🎙️ Inbox Vocale` du Mode C ci-dessus : le dossier Drive sert au stockage du fichier audio + transcription. La base Notion sert au routage par destinataire et à l'affichage cockpit.
+
+### Schéma de la base Inbox Vocal
+
+| Propriété | Type | Usage |
+|---|---|---|
+| `Titre` | title | Titre actionnable extrait |
+| `Auteur` | person | Émetteur (rempli auto par Notion AI mobile / Superwhisper) |
+| `Pour` | multi-select | **Destinataire(s) — pilote l'affichage cockpit** (options : Paul · Julien · Éloïse · Michel · Olivier · Philippe). Vide = broadcast |
+| `Type détecté` | select | `Tâche` · `Bug` · `Décision` · `Question` · `Idée` · `CR Réunion` · `Contrat` · `Autre` |
+| `Statut` | select | `À traiter` · `En cours` · `Traité` (notes Traité disparaissent des cockpits) |
+| `Source` | select | `Superwhisper` · `Notion AI mobile` · `Notion AI desktop` · `Autre` |
+| `Transcription` | text | Contenu intégral de la dictée |
+| `Date de capture` | created_time | Auto |
+
+### Affichage par cockpit
+
+Chaque cockpit AgoraLive (Pauline/Julie/Éloi/Michelle/Olivia/Philippine CTO + BA) affiche en tête une vue gallery `🎙️ Mon inbox vocal` filtrée :
+
+```
+(Pour CONTAINS <prénom propriétaire> OR Pour IS EMPTY) AND Statut != "Traité"
+```
+
+Conséquence : une note `Pour = [Julien]` n'apparaît **que** sur le cockpit Julien. Une note sans `Pour` apparaît sur tous (broadcast). Une note marquée `Traité` disparaît automatiquement de tous les cockpits.
+
+### Détection automatique du destinataire (à exécuter à chaque routage d'une note Inbox Vocal)
+
+Quand l'utilisateur demande de router une note vocale (`"route ma dictée"`, `"Pauline route mes vocales"`, déclenchement direct sur une fiche Inbox Vocal) :
+
+1. **Lire la `Transcription`** de la fiche (champ texte, ou contenu de la page Notion si vide).
+2. **Détecter le(s) destinataire(s)** via ces patterns (insensible à la casse et aux accents) :
+   - `Pour <prénom>` / `À <prénom>` / `Pour : <prénom>` / `Pour le compte de <prénom>`
+   - `Hey <prénom>` / `Salut <prénom>` / `Hello <prénom>` / `Yo <prénom>`
+   - `<Prénom>,` en début de phrase suivi d'une demande
+   - `Dis à <prénom>` / `Demande à <prénom>` / `Préviens <prénom>`
+   - Multi : `Pour Paul et Julien`, `À Éloïse et Michel` → cocher les deux
+3. **Mapper sur les options `Pour`** :
+   - Paul · Julien · Éloïse · Michel · Olivier · Philippe
+   - Variations : `Élo`/`Eloise`/`Eloïse` → Éloïse · `Phil`/`Phil.` → Philippe · insensibilité casse + accents
+4. **Mettre à jour `Pour`** via `notion-update-page` (`update_properties`).
+5. **Aucun destinataire détecté** = laisser `Pour` vide → broadcast.
+6. **Auto-référence** : si le destinataire détecté est l'auteur lui-même, ignorer la détection et laisser `Pour` vide.
+
+### Classification Type détecté + Statut
+
+À chaque routage :
+- Identifier le `Type détecté` selon le contenu (Tâche / Bug / Décision / Question / Idée / CR Réunion / Contrat / Autre)
+- Statut par défaut : `À traiter`. Le passage à `Traité` retire automatiquement la note des cockpits.
+
+### Lien avec le pipeline principal Documents Source
+
+Une note Inbox Vocal qui mentionne du contenu structurant (un bug, une cession, un compte-rendu de call sponsor, etc.) peut **en parallèle** déclencher la procédure complète Documents Source (Étapes A-G ci-dessus) : créer une fiche maître `📥 Documents Source` + les fiches dérivées dans les bases métier. Dans ce cas, l'`Inbox Vocal` joue le rôle de point d'entrée conversationnel, et `Documents Source` joue le rôle d'archive structurée. Les deux coexistent — la fiche Inbox Vocal référencé la fiche maître via les `Notes de traitement`.
+
+### Exemple complet
+
+Dictée Paul → Inbox Vocal : *"Hey Julien, peux-tu regarder le devis Wada Sabuni avant lundi ? J'ai un doute sur le montant. Merci."*
+
+→ Routage :
+- `Pour = [Julien]`
+- `Type détecté = Question`
+- `Statut = À traiter`
+- `Auteur = Paul` (auto)
+
+→ Sur le cockpit Julien, la note apparaît en tête de gallery. Sur les cockpits Michel/Éloïse/Olivier/Philippe : invisible.
+
+### Récap chat spécifique Inbox Vocal
+
+Format à utiliser quand le routage concerne une note vocale routée par destinataire :
+
+```
+🎙️ Note vocale routée
+👤 Auteur : <prénom>
+📨 Pour : <prénom(s) détecté(s)>  (ou « broadcast » si vide)
+📦 Type détecté : <type>
+🚦 Statut : À traiter
+📄 Titre : <titre>
+🔗 Fiche : <URL Notion>
+```
+
+---
+
 ## Historique versions
 
+- **v3** (2026-05-18) — Pivot canal unique : ajout du workflow `🎙️ Inbox Vocal` (base Notion) comme **canal unique de communication AgoraLive** (pings/tâches/questions/décisions). Détection auto du `Pour` depuis la transcription, propriété `Statut` select avec auto-archivage des notes `Traité` hors cockpit. Bases `📨 Pings & questions` et `✅ Mes tâches` archivées.
 - **v2** (2026-05-17) — Pivot architectural : 3 modes d'ingestion (INBOX/Cowork/Inbox Vocale), Apps Script externe pour les moves Drive, suppression du upload Cowork→Drive direct (trop lent), support natif des notes vocales Notion AI multi-distribution
 - **v1** (2026-05) — Première version : upload Cowork→Drive direct, structure Drive `AgoraLive — Documents Source/<Type>/<Année>/`, sans Apps Script
