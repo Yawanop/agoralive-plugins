@@ -2,7 +2,7 @@
 
 Skills universels AgoraLive — installés par tous les membres de l'équipe.
 
-**Version actuelle : 0.2.0** · cf. [CHANGELOG](../CHANGELOG.md)
+**Version actuelle : 0.3.0** · cf. [CHANGELOG](../CHANGELOG.md)
 
 ---
 
@@ -45,6 +45,37 @@ Organisés par finalité :
 - **2 Michelle complétion** : `approche-congres-strategie`, `nouveau-president-contact`
 - **2 Olivia audits** : `audit-rgpd`, `audit-code-sante-publique`
 - **2 Pauline complétion** : `pitch-deck-iterator`, `okr-trimestre-review`
+
+---
+
+## 🔗 Chaînes inter-jumeaux (v0.3.0 — spec phase)
+
+À partir de v0.3.0, l'architecture documente **4 chaînes transverses** où plusieurs jumeaux se synchronisent automatiquement sur un workflow déterministe. Ces chaînes restent en **spec phase** dans cette version (PRDs rédigées, orchestrateur non implémenté). Elles seront activées une à une après décision Paul+Julien (cf. fiche décision Notion).
+
+| Chaîne | Jumeaux | Trigger | Live cible |
+|---|---|---|---|
+| **A — PRD → Sprint** | Pauline → Philippine | PRD complétée dans Notion | 15 juin 2026 |
+| **C — KPI → Comité Mentor** | Pauline → Julie → Philippine BA → Pauline | 1er du mois 7h + cron J-3/J-2/J-1 | 1er juin 2026 |
+| **D — Onboarding cascade** | Julie → Olivia + Éloi + Michelle | Fiche Congrès statut 🟢 Signé | 30 juin 2026 |
+| **E — Pipeline daily → BP** | Éloi → Julie (+ Paul si seuil) | Changement statut deal majeur | 30 juin 2026 |
+
+> 💡 **Chaîne B (officiel-article-v3 → Trinôme Comm)** : hors périmètre par décision Paul du 18/05/2026.
+
+### 🤖 Automatisations daily (live depuis v0.3.0)
+
+5 scheduled tasks Cowork tournent automatiquement **lun-ven à 7h** sur la machine de chaque membre :
+
+| Scheduled task | Jumeau | Source |
+|---|---|---|
+| `cockpit-philippe-watch-daily` | Pauline (Paul) | `cockpit-philippe-watch` |
+| `cessions-watch-daily` | Olivia (Olivier) | `cessions-watch` |
+| `contrats-watch-daily` | Olivia (Olivier) | `contrats-watch` |
+| `pipeline-sponsors-watch-daily` | Éloi (Éloïse) | `pipeline-sponsors-watch` |
+| `prospects-congres-watch-daily` | Michelle (Michel) | `prospects-congres-watch` |
+
+Stockées dans `~/Documents/Claude/Scheduled/` côté machine de chaque membre. Le plugin contient les skills source ; les scheduled tasks sont créées séparément par chaque humain via Cowork (cf. tutoriel à venir).
+
+> 🔗 **Hub initiative complet** : [🤖 Industrialisation Jumeaux v0.3 — Notion](https://www.notion.so/3646979fbcd1814281dce1d1d0178f67)
 
 ---
 
