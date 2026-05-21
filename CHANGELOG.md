@@ -5,6 +5,18 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 
 ---
 
+## [0.5.0] — 2026-05-21
+
+### Added
+
+- **Skill générique `scientific-writing`** ajouté au plugin — manuscrits scientifiques en IMRAD (Introduction, Methods, Results, Discussion), citations APA/AMA/Vancouver, intégration figures/tables, conformité aux reporting guidelines (CONSORT, STROBE, PRISMA). Processus en deux étapes : (1) outline par section avec key points via `research-lookup`, (2) conversion en prose. Pour articles de recherche, soumissions journal, rédaction académique. Disponible sous `agoralive-core:scientific-writing` chez tous les jumeaux.
+
+### Notes
+
+- **Pas un skill métier AgoraLive** — skill générique d'écriture scientifique, utile à Michel (Dir Scientifique) pour rédactions SFODF et publications, mais aussi mutualisable pour tout contenu académique de l'équipe.
+
+---
+
 ## [0.4.2] — 2026-05-19
 
 ### Added
