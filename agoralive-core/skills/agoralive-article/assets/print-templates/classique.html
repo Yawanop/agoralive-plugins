@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi orthodontique à distance par IA — Revue de la littérature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     AGORALIVE — GABARIT PDF « CLASSIQUE » — mono-colonne A4
+     RÉGLAGES (voir print-templates/README.md) :
+       - Format & marges  ->  règle  @page  ci-dessous
+       - Taille du texte  ->  body { font-size }
+       - Colonnes         ->  1 (gabarit mono-colonne)
+     ============================================================ */
+
+  :root{
+    --brand-accent:#0a7c8a; --brand-accent-soft:#0e97a8; --brand-tint:#e4f3f5;
+    --brand-tint-deep:#d3ebef;
+    --ink:#1c1b18; --ink-soft:#46443f; --ink-muted:#6f6b63;
+    --rule:#e0dcd3; --rule-soft:#eeeae1; --paper:#ffffff;
+    --easy:#2d7a4e;
+  }
+
+  @page { size: A4; margin: 17mm 16mm 16mm; }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  body{
+    font-family:'Fraunces',Georgia,serif;
+    font-size:10.6pt; line-height:1.62; color:var(--ink);
+    background:#e7e5e0;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    hyphens:auto; -webkit-hyphens:auto;
+    print-color-adjust:exact; -webkit-print-color-adjust:exact;
+  }
+
+  /* feuille A4 — aperçu écran */
+  .sheet{
+    width:210mm; min-height:297mm; margin:26px auto;
+    background:var(--paper); padding:17mm 16mm 16mm;
+    box-shadow:0 6px 30px rgba(0,0,0,.16);
+  }
+
+  /* ---------- En-tête / page de titre ---------- */
+  .masthead{
+    display:flex; align-items:center; gap:14px;
+    padding-bottom:13px; border-bottom:1px solid var(--rule);
+    font-family:'Inter',sans-serif;
+  }
+  .masthead img.pub{height:24px;width:auto;display:block;}
+  .masthead .sep{width:1px;height:20px;background:var(--rule);}
+  .masthead .tag{
+    font-size:7.6pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--brand-accent);border:1px solid var(--brand-accent);
+    padding:3px 8px;border-radius:100px;white-space:nowrap;
+  }
+  .masthead .dm{display:flex;align-items:center;gap:7px;margin-left:auto;}
+  .masthead .dm svg{display:block;}
+  .masthead .dm span{
+    font-family:'Inter',sans-serif;font-weight:700;font-size:11pt;
+    color:#2b2724;letter-spacing:-.01em;
+  }
+
+  .titleblock{padding:22px 0 18px;border-bottom:2px solid var(--brand-accent);margin-bottom:22px;}
+  .kicker{
+    font-family:'Inter',sans-serif;font-size:8pt;font-weight:700;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--brand-accent);margin-bottom:11px;
+  }
+  h1{
+    font-size:25pt;line-height:1.12;font-weight:500;letter-spacing:-.018em;
+    color:var(--ink);font-variation-settings:"opsz" 144;
+  }
+  .byline{
+    font-family:'Inter',sans-serif;font-size:9pt;color:var(--ink-soft);margin-top:14px;line-height:1.5;
+  }
+  .byline strong{color:var(--ink);font-weight:600;}
+  .readmeta{
+    font-family:'Inter',sans-serif;font-size:8.4pt;color:var(--ink-muted);
+    margin-top:9px;display:flex;gap:16px;flex-wrap:wrap;
+  }
+
+  /* ---------- Titres & corps ---------- */
+  h2{
+    font-size:15pt;font-weight:500;line-height:1.22;letter-spacing:-.01em;
+    color:var(--ink);margin:20px 0 9px;break-after:avoid;
+  }
+  h2::before{
+    content:"";display:block;width:32px;height:2.2px;background:var(--brand-accent);
+    border-radius:2px;margin-bottom:9px;
+  }
+  section{break-before:auto;}
+  p{margin-bottom:9px;color:var(--ink-soft);orphans:2;widows:2;}
+  p strong{color:var(--ink);font-weight:600;}
+  em{font-style:italic;}
+
+  sup.cite{font-size:0;line-height:0;vertical-align:baseline;}
+  sup.cite a{
+    font-family:'Inter',sans-serif;font-size:6.7pt;font-weight:700;line-height:0;
+    vertical-align:super;color:var(--brand-accent);text-decoration:none;padding:0 .5px;
+  }
+  /* termes : rendu en texte normal (glossaire retiré de l'édition imprimée) */
+
+  /* ---------- Encadrés ---------- */
+  .box-label{
+    font-family:'Inter',sans-serif;font-size:7.6pt;font-weight:700;text-transform:uppercase;
+    letter-spacing:.11em;margin-bottom:9px;display:flex;align-items:center;gap:6px;
+  }
+
+  .objectifs{
+    border:1px solid var(--rule);border-radius:9px;padding:15px 18px;margin:14px 0;
+    background:var(--paper);break-inside:avoid;
+  }
+  .objectifs .box-label{color:var(--ink-muted);}
+  .objectifs ol{list-style:none;counter-reset:obj;}
+  .objectifs li{
+    counter-increment:obj;position:relative;padding:4px 0 4px 26px;font-size:10pt;
+  }
+  .objectifs li::before{
+    content:counter(obj);position:absolute;left:0;top:4px;width:17px;height:17px;
+    border-radius:50%;background:var(--brand-tint);color:var(--brand-accent);
+    font-family:'Inter',sans-serif;font-size:7.4pt;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .retenir{
+    border:1px solid var(--rule);border-left:3px solid var(--brand-accent-soft);
+    border-radius:3px 9px 9px 3px;padding:15px 18px;margin:14px 0;
+    background:var(--paper);break-inside:avoid;
+  }
+  .retenir .box-label{color:var(--brand-accent);}
+  .retenir .box-label::before{content:"\2605";color:var(--brand-accent-soft);}
+  .retenir ul{list-style:none;}
+  .retenir li{position:relative;padding:4px 0 4px 19px;font-size:10pt;line-height:1.5;}
+  .retenir li::before{content:"\2192";position:absolute;left:0;top:4px;color:var(--brand-accent);font-weight:700;}
+  .retenir li+li{border-top:1px solid var(--rule-soft);}
+
+  .saviez{
+    background:var(--brand-tint);border:1px solid var(--brand-tint-deep);
+    border-radius:9px;padding:13px 17px;margin:13px 0;break-inside:avoid;
+  }
+  .saviez .box-label{color:#2c6e80;}
+  .saviez .box-label::before{display:none;}
+  .saviez p{font-size:9.6pt;color:var(--ink);margin-bottom:0;}
+  .saviez .src{
+    font-family:'Inter',sans-serif;font-size:7.6pt;font-style:italic;color:var(--ink-muted);
+    margin-top:9px;padding-top:8px;border-top:1px solid rgba(44,110,128,.2);
+  }
+
+  .interpreter{
+    border:1px solid var(--rule);border-left:3px solid var(--brand-accent-soft);
+    border-radius:3px 9px 9px 3px;padding:14px 17px;margin:14px 0;
+    background:var(--paper);break-inside:avoid;
+  }
+  .interpreter .box-label{color:var(--brand-accent);}
+  .interpreter .box-label::before{content:"\2713";color:var(--brand-accent-soft);}
+  .interpreter p{font-size:9.6pt;margin-bottom:0;}
+
+  /* schéma */
+  figure{
+    border:1px solid var(--rule);border-radius:9px;padding:14px;margin:14px 0;
+    background:var(--paper);break-inside:avoid;
+  }
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{
+    font-family:'Inter',sans-serif;font-size:7.8pt;font-style:italic;
+    color:var(--ink-muted);text-align:center;margin-top:9px;
+  }
+
+  /* comparatif */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0;break-inside:avoid;}
+  .ccard{border:1px solid var(--rule);border-radius:9px;padding:14px 16px;background:var(--paper);}
+  .ccard.hl{border-color:var(--brand-accent-soft);border-width:1.4px;}
+  .ccard h4{
+    font-family:'Inter',sans-serif;font-size:8.4pt;font-weight:700;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--brand-accent);margin-bottom:9px;
+  }
+  .ccard ul{list-style:none;}
+  .ccard li{
+    position:relative;padding:3.5px 0 3.5px 14px;font-size:9pt;line-height:1.45;color:var(--ink-soft);
+  }
+  .ccard li::before{content:"\25B8";position:absolute;left:0;color:var(--brand-accent-soft);}
+
+  /* scénario clinique */
+  .cas{
+    border:1px solid var(--rule);border-radius:9px;padding:15px 18px;margin:14px 0;
+    background:var(--paper);break-inside:avoid;
+  }
+  .cas-id{
+    font-family:'Inter',sans-serif;font-size:7.4pt;font-weight:700;text-transform:uppercase;
+    letter-spacing:.1em;color:var(--brand-accent);
+  }
+  .cas-name{font-size:12.5pt;font-weight:500;margin:2px 0 11px;letter-spacing:-.01em;}
+  .cas-grid{display:grid;grid-template-columns:96px 1fr;gap:6px 14px;font-size:9pt;}
+  .cas-grid dt{
+    font-family:'Inter',sans-serif;font-size:7.2pt;font-weight:700;text-transform:uppercase;
+    letter-spacing:.07em;color:var(--ink-muted);padding-top:2px;
+  }
+  .cas-grid dd{color:var(--ink-soft);}
+  .cas-lecon{
+    background:var(--rule-soft);border-left:3px solid var(--brand-accent);
+    border-radius:0 6px 6px 0;padding:10px 13px;margin-top:12px;
+    font-style:italic;font-size:9pt;color:var(--ink);
+  }
+  .cas-lecon b{
+    display:block;font-style:normal;font-family:'Inter',sans-serif;font-size:7pt;
+    font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--brand-accent);margin-bottom:3px;
+  }
+
+  /* ---------- Encadré sponsor ---------- */
+  .sponsorbox{
+    border:1px solid var(--brand-accent-soft);border-radius:10px;
+    padding:16px 20px;margin:18px 0;break-inside:avoid;
+  }
+  .sponsorbox .dm{display:flex;align-items:center;gap:7px;margin-bottom:11px;}
+  .sponsorbox .dm span{
+    font-family:'Inter',sans-serif;font-weight:700;font-size:13pt;color:#2b2724;letter-spacing:-.01em;
+  }
+  .sponsorbox .box-label{color:var(--brand-accent);}
+  .sponsorbox p{font-size:9pt;color:var(--ink-soft);}
+  .sponsorbox p:last-child{margin-bottom:0;}
+
+  /* ---------- Références ---------- */
+  .refs ol{list-style:none;counter-reset:ref;margin-top:6px;}
+  .refs li{
+    counter-increment:ref;position:relative;padding:7px 0 7px 26px;
+    font-family:'Inter',sans-serif;font-size:8pt;line-height:1.5;color:var(--ink-soft);
+    border-bottom:1px solid var(--rule-soft);break-inside:avoid;
+  }
+  .refs li:last-child{border-bottom:none;}
+  .refs li::before{
+    content:counter(ref);position:absolute;left:0;top:7px;width:17px;height:17px;
+    border-radius:50%;background:var(--rule-soft);color:var(--brand-accent);
+    font-size:7.4pt;font-weight:700;display:flex;align-items:center;justify-content:center;
+  }
+  .refs em{color:var(--ink);}
+  .refs a{color:var(--brand-accent);text-decoration:none;}
+
+  /* ---------- Colophon ---------- */
+  .colophon{
+    margin-top:18px;padding-top:11px;border-top:1px solid var(--rule);
+    font-family:'Inter',sans-serif;font-size:7.6pt;line-height:1.6;
+    color:var(--ink-muted);text-align:center;
+  }
+  .colophon strong{color:var(--ink-soft);}
+
+  /* ---------- Impression ---------- */
+  @media print{
+    body{background:#fff;}
+    .sheet{
+      width:auto;min-height:0;margin:0;padding:0;box-shadow:none;
+    }
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;}}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <!-- ===================== EN-TÊTE ===================== -->
+  <header class="masthead">
+    <img class="pub" alt="AgoraLive"
+      src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FscXVlXzEiIGRhdGEtbmFtZT0iQ2FscXVlIDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDQ2NjIuMzkgMTE5My4yNyI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogIzk1YTNhNTsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmaWxsOiAjMjRlYmMzOwogICAgICB9CgogICAgICAuY2xzLTMgewogICAgICAgIGZpbGw6ICMzMTQyNTM7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iNjcxLjM5IiB5PSIyMDYuNjciIHdpZHRoPSIxNTguMzQiIGhlaWdodD0iNzMxLjE1IiByeD0iNTAuMTkiIHJ5PSI1MC4xOSIvPgogIDxyZWN0IGNsYXNzPSJjbHMtMyIgeD0iNDE1LjYiIHk9IjExNC4yMSIgd2lkdGg9IjE1OC4zNCIgaGVpZ2h0PSI4MjMuNiIgcng9IjUwLjE5IiByeT0iNTAuMTkiLz4KICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjE1OS44OSIgeT0iMzEzLjE5IiB3aWR0aD0iMTU4LjM0IiBoZWlnaHQ9IjYyNC43IiByeD0iNTAuMTkiIHJ5PSI1MC4xOSIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTEzODAuMDQsODMxLjc5aC0yMjkuOThsLTQzLjg3LDEwNi4xaC0xMTcuNDJsMjIwLjA3LTUzNC40OWgxMTMuMmwyMjIuMTgsNTM0LjQ5aC0xMjAuM2wtNDMuODctMTA2LjFaTTEzNDMuOTcsNzQ0Ljc1bC03Ny40OC0yMzAuOTctNzkuNTksMjMwLjk3aDE1Ny4wN1oiLz4KICA8cGF0aCBjbGFzcz0iY2xzLTMiIGQ9Ik0xOTM5LDU1Ny4yM3YzMTYuOTVjMCwxNDEuNTMtNzYuNDMsMjA2LjU3LTIxMy42NywyMDYuNTctNzIuMTQsMC0xNDIuMjQtMTcuNzItMTg2LjgxLTUyLjM4bDQzLjg3LTc5LjI0YzMyLjU1LDI2LjE2LDg1LjY0LDQzLjE3LDEzNC40Myw0My4xNyw3Ny44MywwLDExMS43OS0zNS4zNywxMTEuNzktMTAzLjk5di0xNi4yNGMtMjkuMDQsMzEuODUtNzAuNzMsNDcuMzktMTIwLjMsNDcuMzktMTA1LjM5LDAtMTkwLjMzLTcyLjkxLTE5MC4zMy0xODMuOTNzODQuOTMtMTgzLjkzLDE5MC4zMy0xODMuOTNjNTMuMDgsMCw5Ni45NiwxNy43MiwxMjUuOTIsNTQuNDl2LTQ4Ljc5aDEwNC42OWwuMDctLjA3Wk0xODMwLjAyLDczNS41NGMwLTU1LjktNDEuNzYtOTMuMzctOTkuNzctOTMuMzdzLTEwMC40NywzNy40Ny0xMDAuNDcsOTMuMzcsNDIuNDcsOTMuMzcsMTAwLjQ3LDkzLjM3LDk5Ljc3LTM3LjQ3LDk5Ljc3LTkzLjM3WiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTE5NzUuMDcsNzQ3LjU2YzAtMTE0LjYsODguNDUtMTk2LjAyLDIwOS40NS0xOTYuMDJzMjA4Ljc1LDgxLjM1LDIwOC43NSwxOTYuMDItODcuNzUsMTk2LjAyLTIwOC43NSwxOTYuMDItMjA5LjQ1LTgxLjM1LTIwOS40NS0xOTYuMDJaTTIyODEuNDEsNzQ3LjU2YzAtNjUuODEtNDEuNzYtMTA1LjM5LTk2Ljk2LTEwNS4zOXMtOTcuNjYsMzkuNjUtOTcuNjYsMTA1LjM5LDQyLjQ3LDEwNS4zOSw5Ny42NiwxMDUuMzksOTYuOTYtMzkuNjUsOTYuOTYtMTA1LjM5WiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTI2NjQuODgsNTUxLjYxdjEwMS44OGMtOS4yMS0uNy0xNi4yNC0xLjQxLTI0Ljc1LTEuNDEtNjAuODIsMC0xMDEuMTgsMzMuMjYtMTAxLjE4LDEwNi4xdjE3OS43MWgtMTEwLjM5di0zODAuNjZoMTA1LjM5djUwLjJjMjYuODYtMzYuNzcsNzIuMTQtNTUuOSwxMzAuOTItNTUuOXYuMDdaIi8+CiAgPHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMzAyNy4xOCw3MjAuN3YyMTcuMTloLTEwMy4yOHYtNDcuMzljLTIwLjUzLDM0LjY2LTYwLjExLDUzLjA4LTExNi4wMSw1My4wOC04OS4xNSwwLTE0Mi4yNC00OS41LTE0Mi4yNC0xMTUuMzFzNDcuMzktMTEzLjksMTYzLjQ3LTExMy45aDg3Ljc1YzAtNDcuMzktMjguMjYtNzUuMDItODcuNzUtNzUuMDItNDAuMzYsMC04Mi4wNSwxMy40My0xMDkuNjgsMzUuMzdsLTM5LjU4LTc3LjEzYzQxLjc2LTI5Ljc0LDEwMy4yOC00NS45OCwxNjQuMTctNDUuOTgsMTE2LjAxLDAsMTgzLjIzLDUzLjc5LDE4My4yMywxNjkuMDloLS4wN1pNMjkxNi44LDgxNy41OXYtMzguODhoLTc1LjcyYy01MS42OCwwLTY3LjkyLDE5LjEyLTY3LjkyLDQ0LjU4LDAsMjcuNTYsMjMuMzQsNDUuOTgsNjIuMjksNDUuOTgsMzYuNzcsMCw2OC42Mi0xNy4wMSw4MS4zNS01MS42OFoiLz4KICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0zMDk2LjUxLDQwMy4zOWgxMTQuNnY0NDEuMDVoMjQ4LjMzdjkzLjM3aC0zNjIuOTRWNDAzLjM5WiIvPgogIDxyZWN0IGNsYXNzPSJjbHMtMiIgeD0iMzUwMS4yOCIgeT0iNTU3LjIzIiB3aWR0aD0iMTEwLjM5IiBoZWlnaHQ9IjM4MC42NiIvPgogIDxyZWN0IGNsYXNzPSJjbHMtMiIgeD0iMzUwMS4yOCIgeT0iNDAzLjM5IiB3aWR0aD0iMTEwLjM5IiBoZWlnaHQ9IjExMC4zOSIgcng9IjM1LjYzIiByeT0iMzUuNjMiLz4KICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik00MTAwLjEyLDU1MS45MmwtMTY1LjEyLDM5MS4zNGgtMTE3LjExbC0xNjQuMzktMzkxLjM0aDExNy4xMWwxMDguMzgsMjY2LjIzLDExMi4wMi0yNjYuMjNoMTA5LjExWiIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTQ0NzguMTQsNzc1LjMzaC0yODMuMmMxMC40NCw0Ni42Miw1MC4xLDc1LjE1LDEwNy4xNiw3NS4xNSwzOS42NiwwLDY4LjE5LTExLjgzLDkzLjk0LTM2LjE4bDU3Ljc1LDYyLjYyYy0zNC43OSwzOS42Ni04Ni45OCw2MC41NC0xNTQuNDcsNjAuNTQtMTI5LjQyLDAtMjEzLjYyLTgxLjQxLTIxMy42Mi0xOTIuNzRzODUuNTktMTkyLjc0LDE5OS43LTE5Mi43NCwxOTQuODMsNzMuNzYsMTk0LjgzLDE5NC4xNGMwLDguMzUtMS4zOSwyMC4xOC0yLjA5LDI5LjIyWk00MTkzLjU0LDcxMi4wMWgxODQuMzljLTcuNjUtNDcuMzItNDMuMTQtNzcuOTMtOTEuODUtNzcuOTNzLTg0Ljg5LDI5LjkyLTkyLjU0LDc3LjkzWiIvPgo8L3N2Zz4=">
+    <span class="sep"></span>
+    <span class="tag">Contenu sponsorisé</span>
+    <span class="dm">
+      <svg viewBox="0 0 120 120" width="20" height="20" aria-hidden="true">
+        <polygon points="104,20 104,100 32,60" fill="#b7dce6"></polygon>
+        <polygon points="18,20 18,100 90,60" fill="#0e97a8"></polygon>
+      </svg>
+      <span>DentalMonitoring</span>
+    </span>
+  </header>
+
+  <!-- ===================== TITRE ===================== -->
+  <div class="titleblock">
+    <div class="kicker">Orthodontie numérique · Revue de la littérature</div>
+    <h1>Le suivi orthodontique à distance par intelligence artificielle : moins de rendez-vous, des résultats équivalents ?</h1>
+    <p class="byline"><strong>Synthèse de la littérature scientifique</strong> — publiée par AgoraLive · Contenu sponsorisé par DentalMonitoring</p>
+    <div class="readmeta"><span>Lecture ~ 16 min</span><span>Orthodontistes &amp; omnipraticiens</span><span>Mai 2026</span></div>
+  </div>
+
+  <!-- Objectifs -->
+  <div class="objectifs">
+    <div class="box-label">Objectifs de lecture</div>
+    <ol>
+      <li>Définir le <span class="term">suivi orthodontique à distance</span> assisté par IA et situer le rôle de DentalMonitoring</li>
+      <li>Évaluer ce que la littérature établit sur la réduction du nombre de rendez-vous au cabinet</li>
+      <li>Apprécier si la qualité occlusale finale est préservée par rapport au suivi conventionnel</li>
+      <li>Comprendre l'apport de l'IA dans la détection précoce des incidents (décollements, <span class="term">non-tracking</span>)</li>
+      <li>Identifier les limites méthodologiques des études disponibles et lire les résultats avec esprit critique</li>
+    </ol>
+  </div>
+
+  <!-- À retenir -->
+  <div class="retenir">
+    <div class="box-label">À retenir</div>
+    <ul>
+      <li>Le suivi à distance par DentalMonitoring réduit <strong>de façon constante le nombre de rendez-vous</strong> au cabinet — de l'ordre de <strong>−23 % à −33 %</strong> selon les études</li>
+      <li>La <strong>qualité occlusale finale</strong> mesurée par l'indice PAR <strong>ne diffère pas significativement</strong> entre suivi à distance et suivi conventionnel</li>
+      <li>DM <strong>ne raccourcit pas la durée de traitement</strong> : un essai randomisé a même observé +1,9 mois — l'argument est l'efficience organisationnelle, pas la vitesse</li>
+      <li>L'IA détecte les incidents entre deux visites avec une <strong>sensibilité élevée</strong> (décollement de bracket : 98,4 %)</li>
+      <li>Le niveau de preuve reste <strong>modéré</strong> : échantillons souvent petits, études majoritairement rétrospectives, peu d'essais randomisés</li>
+    </ul>
+  </div>
+
+  <!-- Introduction -->
+  <section>
+    <h2>Introduction</h2>
+    <p>Depuis des décennies, le suivi d'un traitement orthodontique repose sur une cadence de rendez-vous fixes : le patient revient toutes les quatre à huit semaines, quel que soit l'état réel de son traitement. Ce rythme a une vertu — la régularité — mais aussi un angle mort : <strong>entre deux contrôles, le praticien ne voit rien</strong>. Une gouttière qui ne s'emboîte plus, un bracket décollé, une hygiène qui se dégrade ne seront constatés qu'au prochain fauteuil, parfois plusieurs semaines trop tard.</p>
+    <p>Le suivi à distance assisté par <span class="term">intelligence artificielle</span> propose de combler cet angle mort. DentalMonitoring, solution développée pour le télésuivi orthodontique, en est l'exemple le plus étudié dans la littérature. Cette revue fait le point sur ce que les publications scientifiques établissent <em>réellement</em> : combien de rendez-vous sont économisés, la qualité du résultat est-elle préservée, l'IA détecte-t-elle fiablement les incidents — et quelles sont les limites de la preuve disponible. Le périmètre retenu couvre les études portant spécifiquement sur DentalMonitoring, chez des patients orthodontiques sans pathologie associée, traités par aligneurs ou par appareil multi-attaches.</p>
+  </section>
+
+  <!-- DM en bref -->
+  <section>
+    <h2>DentalMonitoring en bref</h2>
+    <p>DentalMonitoring est une solution logicielle de <span class="term">téléorthodontie</span>. À intervalles définis par le praticien, le patient réalise un relevé photographique de ses arcades à l'aide de son smartphone et d'un <span class="term">ScanBox</span>, un petit dispositif qui guide le cadrage et standardise les prises de vue. Les images sont transmises à un algorithme d'intelligence artificielle qui les analyse, mesure la progression du déplacement dentaire et signale les anomalies. Le praticien reçoit une synthèse priorisée et décide : laisser le patient poursuivre, lui adresser une consigne à distance, ou le convoquer.</p>
+    <figure>
+      <svg viewBox="0 0 700 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Boucle de suivi DentalMonitoring">
+        <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#0e97a8"></path></marker></defs>
+        <g font-family="Inter, sans-serif">
+          <rect x="10" y="40" width="150" height="74" rx="10" fill="#ffffff" stroke="#0e97a8" stroke-width="1.5"></rect>
+          <text x="85" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#0a7c8a">1 · Patient</text>
+          <text x="85" y="84" text-anchor="middle" font-size="11" fill="#46443f">Relevé photo</text>
+          <text x="85" y="99" text-anchor="middle" font-size="11" fill="#46443f">smartphone + ScanBox</text>
+          <rect x="190" y="40" width="150" height="74" rx="10" fill="#ffffff" stroke="#0e97a8" stroke-width="1.5"></rect>
+          <text x="265" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#0a7c8a">2 · IA</text>
+          <text x="265" y="84" text-anchor="middle" font-size="11" fill="#46443f">Analyse des images,</text>
+          <text x="265" y="99" text-anchor="middle" font-size="11" fill="#46443f">détection d'anomalies</text>
+          <rect x="370" y="40" width="150" height="74" rx="10" fill="#ffffff" stroke="#0e97a8" stroke-width="1.5"></rect>
+          <text x="445" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#0a7c8a">3 · Praticien</text>
+          <text x="445" y="84" text-anchor="middle" font-size="11" fill="#46443f">Synthèse priorisée,</text>
+          <text x="445" y="99" text-anchor="middle" font-size="11" fill="#46443f">décision clinique</text>
+          <rect x="550" y="40" width="140" height="74" rx="10" fill="#e4f3f5" stroke="#0e97a8" stroke-width="1.5"></rect>
+          <text x="620" y="64" text-anchor="middle" font-size="13" font-weight="700" fill="#0a7c8a">4 · Rendez-vous</text>
+          <text x="620" y="84" text-anchor="middle" font-size="11" fill="#46443f">déclenché</text>
+          <text x="620" y="99" text-anchor="middle" font-size="11" fill="#46443f">si nécessaire</text>
+          <line x1="162" y1="77" x2="186" y2="77" stroke="#0e97a8" stroke-width="2" marker-end="url(#arrow)"></line>
+          <line x1="342" y1="77" x2="366" y2="77" stroke="#0e97a8" stroke-width="2" marker-end="url(#arrow)"></line>
+          <line x1="522" y1="77" x2="546" y2="77" stroke="#0e97a8" stroke-width="2" marker-end="url(#arrow)"></line>
+          <path d="M620,118 L620,142 L85,142 L85,118" fill="none" stroke="#0e97a8" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)"></path>
+          <text x="352" y="159" text-anchor="middle" font-size="10.5" fill="#6f6b63">Le cycle se répète au rythme choisi par le praticien</text>
+        </g>
+      </svg>
+      <figcaption>Le principe du télésuivi : une boucle continue qui rend visible ce qui se passe entre deux contrôles.</figcaption>
+    </figure>
+    <p>L'enjeu n'est donc pas de remplacer le praticien, mais de lui donner une <strong>fenêtre d'observation continue</strong> là où le modèle classique n'offrait que des instantanés espacés. C'est sur cette promesse — voir plus souvent pour convoquer plus juste — que la littérature des dernières années a commencé à apporter des données chiffrées.</p>
+  </section>
+
+  <!-- Moins de rendez-vous -->
+  <section>
+    <h2>Moins de rendez-vous : que dit la preuve ?</h2>
+    <p>C'est le résultat le plus solide et le plus reproduit de la littérature. Dans une étude de cohorte rétrospective portant sur des traitements par aligneurs, Hansa et collaborateurs ont observé une <strong>réduction de 3,5 rendez-vous, soit −33,1 %</strong>, dans le groupe suivi par DentalMonitoring par rapport au suivi conventionnel ; le délai jusqu'au premier <span class="term">refinement</span> était par ailleurs raccourci de 1,7 mois<sup class="cite"><a href="#ref1">1</a></sup>. Une seconde cohorte de la même équipe, consacrée au protocole GoLive avec Invisalign sur 155 patients, retrouvait une baisse plus modérée mais statistiquement et cliniquement significative : <strong>2,26 visites en moins, soit −23 %</strong> (7,56 contre 9,82 rendez-vous ; p &lt; 0,001)<sup class="cite"><a href="#ref2">2</a></sup>.</p>
+    <p>Ces données rétrospectives ont été confortées par un <span class="term">essai contrôlé randomisé</span>. Lam, Freer et Miles ont réparti 56 patients traités par aligneurs entre suivi à distance et suivi conventionnel : le groupe DentalMonitoring a nécessité <strong>1,5 rendez-vous clinique de moins</strong><sup class="cite"><a href="#ref3">3</a></sup>. Enfin, la revue systématique de Sangalli, Alessandri-Bonetti et Dalessandri — qui a colligé les publications jusqu'à fin 2022 — conclut sans ambiguïté que l'intégration de DM dans le parcours de soin <strong>diminue significativement le nombre de visites au cabinet</strong><sup class="cite"><a href="#ref5">5</a></sup>.</p>
+    <p>Un point mérite toutefois d'être posé clairement, car il est souvent mal compris : <strong>réduire le nombre de rendez-vous n'équivaut pas à raccourcir le traitement</strong>. Les études convergent au contraire vers une durée de traitement comparable, et l'essai randomisé a même mesuré un traitement <em>légèrement plus long</em> avec le suivi à distance<sup class="cite"><a href="#ref3">3</a></sup>. L'apport de DentalMonitoring se situe donc sur le terrain de l'<strong>efficience organisationnelle</strong> — moins de déplacements, moins de temps fauteuil consommé inutilement — et non sur celui de la vitesse.</p>
+    <div class="saviez">
+      <div class="box-label">Le saviez-vous ?</div>
+      <p>L'essai contrôlé randomisé de Lam, Freer et Miles (2023) a comparé 56 patients traités par aligneurs dans un même cabinet, par un seul orthodontiste expérimenté. Le suivi par DentalMonitoring a permis <strong>1,5 rendez-vous de moins</strong>, mais la durée de traitement a été <strong>allongée de 1,9 mois</strong> et la satisfaction des patients était <strong>aussi élevée dans les deux groupes</strong>. La leçon est utile pour calibrer le discours : le télésuivi est un levier d'efficience, pas un accélérateur de traitement.</p>
+      <div class="src">Lam J, Freer E, Miles P. Am J Orthod Dentofacial Orthop. 2023;163(4):456-464. PMID : 36990528.</div>
+    </div>
+    <div class="compare">
+      <div class="ccard">
+        <h4>Suivi conventionnel</h4>
+        <ul>
+          <li>Rendez-vous à intervalle fixe, identiques pour tous les patients</li>
+          <li>Les incidents sont découverts au contrôle suivant</li>
+          <li>Déplacements et temps fauteuil mobilisés même sans nécessité clinique</li>
+          <li>Observance et hygiène évaluées ponctuellement</li>
+        </ul>
+      </div>
+      <div class="ccard hl">
+        <h4>Suivi augmenté par DentalMonitoring</h4>
+        <ul>
+          <li>Rendez-vous espacés et déclenchés par la donnée clinique</li>
+          <li>Les incidents sont signalés entre deux visites</li>
+          <li>Le temps fauteuil est réservé aux situations qui le justifient</li>
+          <li>Hygiène et progression observées à chaque relevé</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Qualité préservée -->
+  <section>
+    <h2>Une qualité de résultat préservée</h2>
+    <p>Espacer les rendez-vous n'a d'intérêt que si le résultat final n'en souffre pas. La question a été abordée frontalement par Marks et collaborateurs, qui ont comparé le suivi à distance et le suivi conventionnel à l'aide de l'<span class="term">indice PAR</span>, mesure validée de la sévérité occlusale, sur les dossiers pré- et post-traitement de 51 patients. Les deux groupes ont enregistré une amélioration significative de leur score, et surtout <strong>aucune différence significative n'a été retrouvée entre eux</strong> : la qualité occlusale obtenue avec DentalMonitoring était équivalente à celle du suivi classique<sup class="cite"><a href="#ref4">4</a></sup>.</p>
+    <p>Ce constat rejoint celui de la cohorte aligneurs de Hansa et collaborateurs, dans laquelle la précision du déplacement dentaire obtenu — c'est-à-dire l'écart entre la position prédite par le plan de traitement et la position réellement atteinte — était <strong>cliniquement comparable</strong> entre les deux modes de suivi, le groupe DM atteignant ce résultat avec un premier refinement plus précoce<sup class="cite"><a href="#ref1">1</a></sup>. L'étude pilote cas-témoins de Martínez Gil-Ortega et collaborateurs, menée en population pédiatrique, aboutit à la même conclusion : le seul paramètre significativement modifié est le nombre de rendez-vous, sans différence sur la durée de traitement, le nombre de refinements ou le nombre d'aligneurs par refinement<sup class="cite"><a href="#ref9">9</a></sup>.</p>
+    <p>Le message qui se dégage est cohérent d'une étude à l'autre : <strong>le télésuivi déplace des rendez-vous sans déplacer le résultat</strong>. Ce qui change relève de l'organisation ; ce qui compte cliniquement — l'occlusion finale — reste au même niveau.</p>
+  </section>
+
+  <!-- IA vigie -->
+  <section>
+    <h2>L'IA, vigie clinique entre deux visites</h2>
+    <p>Si les rendez-vous peuvent être espacés sans perte de qualité, c'est à une condition : <strong>que les incidents survenant entre deux visites soient repérés à temps</strong>. C'est précisément la fonction de l'algorithme de détection. Sa valeur dépend de sa <span class="term">sensibilité</span> — sa capacité à ne pas manquer un problème réel — et de sa spécificité — sa capacité à ne pas multiplier les fausses alertes.</p>
+    <p>Deux études multicentriques récentes ont quantifié ces performances. Pour les traitements multi-attaches, McCray et collaborateurs ont analysé les relevés de 1 014 patients, en prenant pour référence le consensus de trois experts en orthodontie. L'IA de DentalMonitoring a détecté un décollement de bracket avec une <strong>sensibilité de 98,4 %</strong>, un clip auto-ligaturant ouvert à <strong>91,1 %</strong> et une perte de ligature à <strong>93,3 %</strong><sup class="cite"><a href="#ref7">7</a></sup>. Pour les traitements par aligneurs, une seconde étude portant sur 3 323 évaluations issues de 623 patients a mesuré la détection du défaut d'emboîtement (<span class="term">non-tracking</span>) : la sensibilité atteignait <strong>93,2 %</strong> et la spécificité <strong>86,2 %</strong> pour la distinction binaire gouttière emboîtée / non emboîtée, avec une valeur prédictive négative élevée de 94,4 %<sup class="cite"><a href="#ref8">8</a></sup>.</p>
+    <div class="saviez">
+      <div class="box-label">Le saviez-vous ?</div>
+      <p>Dans l'étude multicentrique de McCray et collaborateurs, chaque série d'images analysée par l'IA a été <strong>relue indépendamment par un panel de trois experts</strong>, dont le consensus servait de standard de référence. C'est cette confrontation à l'œil humain expert qui donne du poids aux chiffres : sur les trois incidents évalués en traitement multi-attaches, l'algorithme a manqué moins de 2 % des décollements de bracket réels.</p>
+      <div class="src">McCray JF, et al. Sci Rep. 2026;16(1):6627. PMID : 41611791.</div>
+    </div>
+    <p>Concrètement, cette capacité de détection transforme le rendez-vous d'un rituel calendaire en une <strong>décision clinique fondée sur la donnée</strong>. Les deux scénarios suivants, représentatifs des situations rapportées dans la littérature, illustrent ce basculement.</p>
+    <div class="cas">
+      <div class="cas-id">Scénario d'usage 1 — Aligneurs</div>
+      <div class="cas-name">Le défaut d'emboîtement repéré à distance</div>
+      <dl class="cas-grid">
+        <dt>Contexte</dt><dd>Patiente traitée par aligneurs, relevé hebdomadaire, prochain contrôle prévu dans 5 semaines</dd>
+        <dt>Observation</dt><dd>L'IA signale un défaut d'emboîtement de la gouttière au secteur antérieur (non-tracking)</dd>
+        <dt>Décision</dt><dd>Consigne adressée à distance — chewies, prolongation du port de la gouttière en cours — sans déplacer la patiente</dd>
+        <dt>Appui littérature</dt><dd>Sensibilité de l'IA pour le non-tracking : 93,2 %<sup class="cite"><a href="#ref8">8</a></sup></dd>
+      </dl>
+      <div class="cas-lecon"><b>Ce qu'il faut en tirer</b>Le défaut d'emboîtement est corrigé avant qu'il ne compromette toute la séquence d'aligneurs — et donc avant qu'il ne génère un refinement supplémentaire.</div>
+    </div>
+    <div class="cas">
+      <div class="cas-id">Scénario d'usage 2 — Multi-attaches</div>
+      <div class="cas-name">Le bracket décollé entre deux contrôles</div>
+      <dl class="cas-grid">
+        <dt>Contexte</dt><dd>Patient en appareil multi-attaches, intervalle de rendez-vous porté à 8 semaines</dd>
+        <dt>Observation</dt><dd>L'IA repère un bracket décollé sur une molaire lors d'un relevé intermédiaire</dd>
+        <dt>Décision</dt><dd>Rappel ciblé du patient pour recollage ; les patients sans incident conservent l'intervalle long</dd>
+        <dt>Appui littérature</dt><dd>Sensibilité de l'IA pour le décollement de bracket : 98,4 %<sup class="cite"><a href="#ref7">7</a></sup></dd>
+      </dl>
+      <div class="cas-lecon"><b>Ce qu'il faut en tirer</b>Les rendez-vous sont alloués aux patients qui en ont réellement besoin : le télésuivi opère un véritable triage clinique fondé sur l'observation, et non sur le calendrier.</div>
+    </div>
+  </section>
+
+  <!-- Hygiène -->
+  <section>
+    <h2>Au-delà du déplacement dentaire : hygiène et santé parodontale</h2>
+    <p>Le bénéfice du télésuivi ne se limite pas à la mécanique orthodontique. Parce que chaque relevé photographique donne aussi à voir l'état gingival et l'accumulation de plaque, il ouvre une fenêtre sur la santé bucco-dentaire que le suivi classique n'observe qu'au fauteuil.</p>
+    <p>Une étude prospective de Sangalli et collaborateurs a réparti 30 patients débutant un traitement orthodontique entre un groupe équipé du dispositif de relevé à domicile et un groupe en soins standards. Le groupe suivi à distance a montré une <strong>amélioration significative du contrôle de plaque</strong> au troisième mois (p = 0,010) et au sixième mois (p = 0,039). Surtout, <strong>aucune lésion carieuse</strong> n'a été diagnostiquée dans le groupe télésuivi, contre <strong>cinq dans le groupe témoin</strong> (p = 0,049)<sup class="cite"><a href="#ref6">6</a></sup>. Le nombre de <span class="term">lésions blanches initiales</span> ne différait pas entre les groupes, et la baisse des consultations d'urgence observée n'atteignait pas le seuil de signification.</p>
+    <div class="saviez">
+      <div class="box-label">Le saviez-vous ?</div>
+      <p>Dans cette étude prospective, le simple fait de demander au patient un relevé photographique mensuel a coïncidé avec un meilleur contrôle de plaque. Le télésuivi semble ainsi agir comme un <strong>rappel régulier d'auto-soin</strong> : en se sachant observé, le patient maintient plus volontiers une hygiène rigoureuse — un effet collatéral bienvenu pour la prévention des lésions carieuses pendant le traitement.</p>
+      <div class="src">Sangalli L, Savoldi F, Dalessandri D, et al. BMC Oral Health. 2021;21(1):435. PMID : 34493255.</div>
+    </div>
+    <p>Obtenus sur un premier effectif, ces résultats demandent à être confirmés à plus grande échelle — ce à quoi s'emploient les travaux en cours. Ils suggèrent que la valeur du télésuivi tient autant à la <strong>continuité de l'observation</strong> qu'à la performance de l'algorithme.</p>
+  </section>
+
+  <!-- Bénéfices -->
+  <section>
+    <h2>Bénéfices pour le patient et pour le cabinet</h2>
+    <p>Du côté du patient, la réduction du nombre de visites se traduit par moins de déplacements, moins de temps perdu et moins d'absences scolaires ou professionnelles. Les études qui ont recueilli le ressenti des patients rapportent une <strong>perception globalement positive</strong> du suivi à distance et un <strong>niveau de satisfaction élevé</strong>, équivalent à celui du suivi conventionnel<sup class="cite"><a href="#ref2">2</a></sup><sup class="cite"><a href="#ref3">3</a></sup>. La principale difficulté rapportée est d'ordre pratique : certains patients peinent, au début, à réaliser correctement leurs relevés photographiques — un point qui plaide pour un temps d'accompagnement à la prise en main<sup class="cite"><a href="#ref2">2</a></sup>.</p>
+    <p>Du côté du cabinet, l'intérêt est de nature organisationnelle. En convertissant des rendez-vous calendaires en rendez-vous déclenchés par la donnée, le télésuivi permet de <strong>concentrer le temps fauteuil sur les situations qui le justifient</strong>. Le praticien conserve la maîtrise complète de la décision : l'algorithme priorise et alerte, il ne prescrit pas. Cette logique de triage est aussi ce qui a rendu le télésuivi particulièrement utile lorsque l'accès aux cabinets a été contraint, notamment durant la pandémie de COVID-19, période qui a accéléré l'adoption de ces outils en pratique courante.</p>
+  </section>
+
+  <!-- Bien interpréter -->
+  <div class="interpreter">
+    <div class="box-label">Bien interpréter ces résultats</div>
+    <p>Les bénéfices rapportés par ces études supposent des conditions d'usage cohérentes : des relevés photographiques réguliers, des images de qualité et un patient accompagné dans la prise en main de l'outil. C'est dans ce cadre — celui pour lequel DentalMonitoring a été conçu — que le télésuivi donne sa pleine mesure. La recherche sur le suivi orthodontique à distance est par ailleurs un champ récent et en pleine expansion : de nouveaux travaux viennent régulièrement confirmer et préciser ces premiers résultats.</p>
+  </div>
+
+  <!-- Synthèse -->
+  <section>
+    <h2>Synthèse</h2>
+    <p>Au terme de cette revue, l'image qui se dégage de la littérature est nette et cohérente. Le suivi orthodontique à distance assisté par IA, tel qu'il est mis en œuvre par DentalMonitoring, <strong>réduit de manière fiable le nombre de rendez-vous au cabinet sans compromettre la qualité du résultat occlusal</strong>. Il n'accélère pas le traitement, mais il en améliore l'efficience, et il ajoute une couche de sécurité en détectant tôt les incidents — décollements, défauts d'emboîtement — comme en soutenant l'hygiène du patient.</p>
+    <div class="compare">
+      <div class="ccard hl">
+        <h4>Ce que le télésuivi améliore</h4>
+        <ul>
+          <li>Nombre de rendez-vous au cabinet : −23 % à −33 %<sup class="cite"><a href="#ref1">1</a></sup><sup class="cite"><a href="#ref2">2</a></sup><sup class="cite"><a href="#ref5">5</a></sup></li>
+          <li>Détection précoce des incidents entre deux visites<sup class="cite"><a href="#ref7">7</a></sup><sup class="cite"><a href="#ref8">8</a></sup></li>
+          <li>Contrôle de plaque et prévention carieuse<sup class="cite"><a href="#ref6">6</a></sup></li>
+          <li>Confort patient : déplacements et temps mobilisé</li>
+        </ul>
+      </div>
+      <div class="ccard">
+        <h4>Ce qui reste inchangé</h4>
+        <ul>
+          <li>Durée totale de traitement (équivalente, voire allongée)<sup class="cite"><a href="#ref3">3</a></sup></li>
+          <li>Qualité occlusale finale, indice PAR<sup class="cite"><a href="#ref4">4</a></sup></li>
+          <li>Nombre de refinements et d'aligneurs<sup class="cite"><a href="#ref9">9</a></sup></li>
+          <li>Niveau de satisfaction des patients<sup class="cite"><a href="#ref3">3</a></sup></li>
+        </ul>
+      </div>
+    </div>
+    <p>Pour le praticien qui envisage d'intégrer le télésuivi, la décision ne se pose donc pas en termes de vitesse, mais d'<strong>organisation et de sécurité</strong> : voir plus souvent pour convoquer plus juste, et libérer du temps clinique pour les situations qui en ont réellement besoin. C'est sur ce terrain que la preuve disponible est, à ce jour, la plus favorable.</p>
+  </section>
+
+  <!-- Encadré sponsor -->
+  <div class="sponsorbox">
+    <div class="dm">
+      <svg viewBox="0 0 120 120" width="26" height="26" aria-hidden="true">
+        <polygon points="104,20 104,100 32,60" fill="#b7dce6"></polygon>
+        <polygon points="18,20 18,100 90,60" fill="#0e97a8"></polygon>
+      </svg>
+      <span>DentalMonitoring</span>
+    </div>
+    <div class="box-label">À propos de ce contenu sponsorisé</div>
+    <p>Cet article est un <strong>contenu sponsorisé par DentalMonitoring</strong>, solution de télésuivi orthodontique reposant sur l'intelligence artificielle et l'imagerie par smartphone.</p>
+    <p>Il a été conçu sous la forme d'une <strong>revue de la littérature</strong> : les données chiffrées proviennent de publications scientifiques indépendantes, revues par les pairs et référencées sur PubMed, chacune identifiée par son PMID dans la section Références.</p>
+    <p>Le lecteur est invité à se reporter aux sources originales pour former son propre jugement. Ce document a une vocation d'information professionnelle et ne se substitue pas à l'appréciation clinique du praticien.</p>
+  </div>
+
+  <!-- Références -->
+  <section class="refs">
+    <h2>Références</h2>
+    <ol>
+      <li id="ref1">Hansa I, Katyal V, Ferguson DJ, Vaid N. Outcomes of clear aligner treatment with and without Dental Monitoring: a retrospective cohort study. <em>Am J Orthod Dentofacial Orthop.</em> 2021;159(4):453-459. <a href="https://pubmed.ncbi.nlm.nih.gov/33573897/">PMID : 33573897</a>.</li>
+      <li id="ref2">Hansa I, Semaan SJ, Vaid NR. Clinical outcomes and patient perspectives of Dental Monitoring GoLive with Invisalign — a retrospective cohort study. <em>Prog Orthod.</em> 2020;21(1):16. <a href="https://pubmed.ncbi.nlm.nih.gov/32537723/">PMID : 32537723</a>.</li>
+      <li id="ref3">Lam J, Freer E, Miles P. Comparative assessment of treatment efficiency and patient experience between Dental Monitoring and conventional monitoring of clear aligner therapy: a single-center randomized controlled trial. <em>Am J Orthod Dentofacial Orthop.</em> 2023;163(4):456-464. <a href="https://pubmed.ncbi.nlm.nih.gov/36990528/">PMID : 36990528</a>.</li>
+      <li id="ref4">Marks J, Freer E, Ong D, Lam J, Miles P. Evaluating Dental Monitoring effectiveness compared with conventional monitoring of clear aligner therapy using the Peer Assessment Rating index. <em>Am J Orthod Dentofacial Orthop.</em> 2024;166(4):350-355. <a href="https://pubmed.ncbi.nlm.nih.gov/38935004/">PMID : 38935004</a>.</li>
+      <li id="ref5">Sangalli L, Alessandri-Bonetti A, Dalessandri D. Effectiveness of dental monitoring system in orthodontics: a systematic review. <em>J Orthod.</em> 2024;51(1):28-40. <a href="https://pubmed.ncbi.nlm.nih.gov/37278017/">PMID : 37278017</a>.</li>
+      <li id="ref6">Sangalli L, Savoldi F, Dalessandri D, Bonetti S, Gu M, Signoroni A. Effects of remote digital monitoring on oral hygiene of orthodontic patients: a prospective study. <em>BMC Oral Health.</em> 2021;21(1):435. <a href="https://pubmed.ncbi.nlm.nih.gov/34493255/">PMID : 34493255</a>.</li>
+      <li id="ref7">McCray JF, Smith L, Handlin D, Dabney W, Mietz C, Skafi R. Accuracy of DentalMonitoring's artificial intelligence in detecting common orthodontic braces treatment related emergencies. <em>Sci Rep.</em> 2026;16(1):6627. <a href="https://pubmed.ncbi.nlm.nih.gov/41611791/">PMID : 41611791</a>.</li>
+      <li id="ref8">McCray JF, Dabney W, Handlin D, Smith L, Zhu J, Trinidad MRR. Accuracy of DentalMonitoring's artificial intelligence in detecting aligner tracking issues: a retrospective multi-centric study. <em>BMC Oral Health.</em> 2026;26(1):239. <a href="https://pubmed.ncbi.nlm.nih.gov/41501754/">PMID : 41501754</a>.</li>
+      <li id="ref9">Martínez Gil-Ortega A, Cintora-López P, Pérez Rodríguez LM, Viñas MJ, Aragoneses JM, Arrieta-Blanco P. Pilot case control evaluation of artificial intelligence assisted orthodontic monitoring and pediatric patient perception. <em>Sci Rep.</em> 2025;15(1):40515. <a href="https://pubmed.ncbi.nlm.nih.gov/41254068/">PMID : 41254068</a>.</li>
+    </ol>
+  </section>
+
+  <div class="colophon">
+    <strong>AgoraLive</strong> · Revue de la littérature · Contenu sponsorisé par DentalMonitoring · Mai 2026<br>
+    Les études citées sont des publications indépendantes revues par les pairs. Vérifiez toujours les sources originales.
+  </div>
+
+</div>
+</body>
+</html>

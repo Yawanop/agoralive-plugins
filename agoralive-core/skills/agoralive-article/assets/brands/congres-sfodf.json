@@ -1,0 +1,17 @@
+{
+  "id": "congres-sfodf",
+  "type": "congres",
+  "name": "SFODF",
+  "logo": null,
+  "colors": {
+    "accent": "#21405e",
+    "accent_soft": "#2e5a82",
+    "accent_bright": "#5189b8",
+    "tint": "#e9f0f6",
+    "tint_deep": "#d3e1ec"
+  },
+  "colors_cmyk": {},
+  "source": "manuel",
+  "date_maj": "2026-05-22",
+  "note": "Entree de demonstration du registre. Couleurs et logo PROVISOIRES — a remplacer par la charte officielle de la SFODF avant utilisation reelle."
+}

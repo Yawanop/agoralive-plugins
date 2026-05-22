@@ -5,6 +5,19 @@ Versioning sémantique : MAJOR.MINOR.PATCH.
 
 ---
 
+## [0.6.0] — 2026-05-22
+
+### Added
+
+- **Nouveau skill `agoralive-article`** — moteur éditorial AgoraLive : transforme une transcription de conférence ou un brief de sujet en article scientifique fini, en HTML web interactif ET en PDF imprimable, et compile plusieurs articles en livret de congrès. Deux modes de création — article de conférence (depuis la transcription audio) et article sponsorisé (revue de la littérature avec vérification PubMed des PMID, zéro référence inventée). Charte graphique pilotée par profil de marque (congrès ou sponsor), architecture prête pour une récupération auto depuis agoralive.ai. Bibliothèque de gabarits PDF (mono-colonne classique, revue 2 colonnes). Système d'audit intégré : contrôles déterministes (intégrité citations/références, autonomie, PMID) via `audit_article.py` + audit guidé fond + forme. Scripts : `build_article.py`, `export_pdf.py`, `pubmed_verify.py`, `build_livret.py`, `audit_article.py`. Disponible sous `agoralive-core:agoralive-article` chez tous les jumeaux.
+
+### Notes
+
+- **Évolution AgoraLive de `scientific-writing`** — `agoralive-article` est orienté production éditoriale (web + PDF + livret) plutôt que manuscrit académique. `scientific-writing` est conservé en parallèle pour les rédactions académiques classiques (IMRAD, soumissions journal) — les deux skills coexistent.
+- Issu d'un travail d'itération sur l'article de référence DentalMonitoring : design web validé, édition PDF, onde ambiante, audit qualité.
+
+---
+
 ## [0.5.0] — 2026-05-21
 
 ### Added

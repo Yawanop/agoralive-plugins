@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livret de congrès — AgoraLive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     AGORALIVE — GABARIT LIVRET DE CONGRÈS
+     Enveloppe d'un recueil multi-articles : couverture, sommaire,
+     articles à pagination continue, 4e de couverture.
+     `build_livret.py` insère les articles aux emplacements marqués
+     BUILD_LIVRET. La charte vient du profil du congrès.
+     ============================================================ */
+
+  :root{
+    /* Charte du congrès — injectée depuis le profil de marque */
+    --brand-accent:        #1f3a5f;   /* {{ congres.colors.accent }} */
+    --brand-accent-soft:   #2f5d8a;   /* {{ congres.colors.accent_soft }} */
+    --brand-accent-bright: #4a86c0;   /* {{ congres.colors.accent_bright }} */
+    --brand-tint:          #eaf0f6;   /* {{ congres.colors.tint }} */
+    /* Neutres éditoriaux AgoraLive — fixes */
+    --ink:#1c1b18; --ink-soft:#46443f; --ink-muted:#6f6b63;
+    --paper:#ffffff; --rule:#e0dcd3;
+  }
+
+  /* Marges en miroir recto/verso : gouttière intérieure élargie (reliure) */
+  @page        { size: A4; margin: 18mm 14mm 16mm; }
+  @page :left  { margin-left: 14mm; margin-right: 20mm; }
+  @page :right { margin-left: 20mm; margin-right: 14mm; }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Fraunces',Georgia,serif; color:var(--ink);
+    background:#e7e5e0; -webkit-font-smoothing:antialiased;
+    print-color-adjust:exact; -webkit-print-color-adjust:exact;
+  }
+
+  /* Page A4 — aperçu écran */
+  .page{
+    width:210mm; min-height:297mm; margin:24px auto;
+    background:var(--paper); padding:20mm 18mm;
+    box-shadow:0 6px 30px rgba(0,0,0,.16); position:relative;
+  }
+
+  /* ---------- Couverture ---------- */
+  .cover{
+    background:linear-gradient(165deg,var(--brand-accent) 0%,var(--brand-accent-soft) 100%);
+    color:#fff; display:flex; flex-direction:column; min-height:297mm;
+  }
+  .cover-top{font-family:'Inter',sans-serif;font-size:10pt;letter-spacing:.16em;text-transform:uppercase;opacity:.85;}
+  .cover-mid{margin-top:auto;margin-bottom:auto;}
+  .cover-congres{
+    font-family:'Inter',sans-serif;font-size:13pt;font-weight:600;
+    letter-spacing:.04em;opacity:.92;margin-bottom:14px;
+  }
+  .cover-title{
+    font-size:40pt;line-height:1.08;font-weight:500;letter-spacing:-.02em;
+    font-variation-settings:"opsz" 144;
+  }
+  .cover-year{font-family:'Inter',sans-serif;font-size:12pt;margin-top:18px;opacity:.85;}
+  .cover-foot{
+    font-family:'Inter',sans-serif;font-size:9pt;display:flex;
+    justify-content:space-between;align-items:flex-end;opacity:.9;
+  }
+  .cover-foot .pub{display:flex;align-items:baseline;gap:6px;}
+  .cover-foot .pub b{font-size:13pt;font-weight:700;}
+
+  /* ---------- Sommaire ---------- */
+  .somm-title{
+    font-size:24pt;font-weight:500;letter-spacing:-.01em;margin-bottom:6px;
+  }
+  .somm-title::after{
+    content:"";display:block;width:42px;height:2.5px;background:var(--brand-accent);
+    border-radius:2px;margin-top:10px;
+  }
+  .somm-list{list-style:none;margin-top:22px;}
+  .somm-item{
+    display:flex;align-items:baseline;gap:10px;padding:13px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .somm-num{
+    font-family:'Inter',sans-serif;font-size:10pt;font-weight:700;color:var(--brand-accent);
+    width:26px;flex-shrink:0;
+  }
+  .somm-text{flex:1;}
+  .somm-art{font-size:13pt;font-weight:500;color:var(--ink);}
+  .somm-meta{font-family:'Inter',sans-serif;font-size:8.5pt;color:var(--ink-muted);margin-top:2px;}
+  .somm-dots{flex:1;border-bottom:1.5px dotted var(--rule);margin:0 6px 3px;}
+  .somm-page{font-family:'Inter',sans-serif;font-size:11pt;font-weight:600;color:var(--brand-accent);}
+
+  /* ---------- Article dans le livret ---------- */
+  /* Chaque article démarre en belle page (page de droite) */
+  .article-start{break-before:right;}
+
+  /* ---------- 4e de couverture / colophon ---------- */
+  .colophon{
+    background:var(--brand-accent);color:#fff;min-height:297mm;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    font-family:'Inter',sans-serif;
+  }
+  .colophon h3{font-family:'Fraunces',serif;font-size:16pt;font-weight:500;margin-bottom:14px;}
+  .colophon p{font-size:9pt;line-height:1.7;opacity:.88;margin-bottom:5px;}
+
+  /* ---------- Impression ---------- */
+  @media print{
+    body{background:#fff;}
+    .page{width:auto;min-height:0;margin:0;padding:0;box-shadow:none;}
+    .cover,.colophon{min-height:0;height:100vh;}
+    /* Fond perdu : si le PDF doit partir en impression pro, l'export
+       (build_livret.py / export_pdf.py) ajoute 3-5 mm de bleed + traits
+       de coupe. La pagination continue et les titres courants sont
+       posés par l'export, pas par le CSS @page. */
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== COUVERTURE ===================== -->
+<div class="page cover">
+  <div class="cover-top">Recueil scientifique</div>
+  <div class="cover-mid">
+    <div class="cover-congres"><!-- BUILD_LIVRET: congres.nom -->Congrès SFODF</div>
+    <div class="cover-title"><!-- BUILD_LIVRET: livret.titre -->Les actes du congrès</div>
+    <div class="cover-year"><!-- BUILD_LIVRET: livret.millesime -->Édition 2026</div>
+  </div>
+  <div class="cover-foot">
+    <span class="pub">Publié par <b>AgoraLive</b></span>
+    <span><!-- BUILD_LIVRET: logo du congrès --></span>
+  </div>
+</div>
+
+<!-- ===================== SOMMAIRE ===================== -->
+<div class="page">
+  <div class="somm-title">Sommaire</div>
+  <ul class="somm-list">
+    <!-- BUILD_LIVRET: une entrée .somm-item par article, page renseignée à l'assemblage -->
+    <li class="somm-item">
+      <span class="somm-num">01</span>
+      <span class="somm-text">
+        <span class="somm-art">Titre de l'article</span>
+        <span class="somm-meta">Conférence · Auteur — ou — Revue de littérature · Sponsor</span>
+      </span>
+      <span class="somm-dots"></span>
+      <span class="somm-page">3</span>
+    </li>
+  </ul>
+</div>
+
+<!-- ===================== ARTICLES ===================== -->
+<!-- BUILD_LIVRET: pour chaque article, insérer ici son corps (HTML print rendu),
+     enveloppé dans <div class="article-start"> … </div> pour le démarrage
+     en belle page. La pagination continue est appliquée à l'export. -->
+<div class="page article-start">
+  <!-- BUILD_LIVRET: corps de l'article 1 -->
+</div>
+
+<!-- ===================== 4e DE COUVERTURE ===================== -->
+<div class="page colophon">
+  <div>
+    <h3>AgoraLive</h3>
+    <p><!-- BUILD_LIVRET: congres.nom + millesime -->Recueil du Congrès SFODF — Édition 2026.</p>
+    <p>Édité par AgoraLive. Directeur de la publication : —.</p>
+    <p>Les articles signalés « Contenu sponsorisé » sont des contenus commerciaux ; les études citées sont des publications indépendantes revues par les pairs.</p>
+    <p>© AgoraLive 2026. Tous droits réservés.</p>
+  </div>
+</div>
+
+</body>
+</html>

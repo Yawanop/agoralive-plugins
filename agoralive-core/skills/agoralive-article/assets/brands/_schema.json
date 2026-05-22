@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Profil de marque — agoralive-article",
+  "description": "Identite d'un congres ou d'un sponsor, appliquee a un article via les variables CSS --brand-*.",
+  "type": "object",
+  "required": ["id", "type", "name", "colors", "source"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "identifiant fichier, ex. sponsor-dentalmonitoring"
+    },
+    "type": {
+      "enum": ["congres", "sponsor"]
+    },
+    "name": {
+      "type": "string",
+      "description": "nom affiche de la marque"
+    },
+    "logo": {
+      "type": ["string", "null"],
+      "description": "logo en data-URI (SVG) ou chemin de fichier ; null si non fourni"
+    },
+    "colors": {
+      "type": "object",
+      "required": ["accent", "accent_soft", "accent_bright", "tint", "tint_deep"],
+      "properties": {
+        "accent": { "type": "string", "description": "teal fonce — titres et texte de marque" },
+        "accent_soft": { "type": "string", "description": "couleur de marque principale" },
+        "accent_bright": { "type": "string", "description": "variante claire — survols, onde ambiante" },
+        "tint": { "type": "string", "description": "fond teinte tres clair (encadres)" },
+        "tint_deep": { "type": "string", "description": "bordures teintees" }
+      }
+    },
+    "colors_cmyk": {
+      "type": "object",
+      "description": "equivalents CMJN pour l'impression. Cle = nom de couleur, valeur = 'C,M,J,N'."
+    },
+    "source": {
+      "enum": ["manuel", "agoralive.ai"],
+      "description": "origine du profil. 'manuel' aujourd'hui ; 'agoralive.ai' quand la recuperation auto sera branchee."
+    },
+    "date_maj": {
+      "type": "string",
+      "description": "date de derniere mise a jour, format AAAA-MM-JJ"
+    },
+    "note": {
+      "type": "string",
+      "description": "remarque libre (provenance, points a confirmer...)"
+    }
+  }
+}

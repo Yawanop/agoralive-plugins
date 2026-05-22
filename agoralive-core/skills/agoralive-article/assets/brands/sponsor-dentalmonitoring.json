@@ -1,0 +1,19 @@
+{
+  "id": "sponsor-dentalmonitoring",
+  "type": "sponsor",
+  "name": "DentalMonitoring",
+  "logo": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%20120'%3E%3Cpolygon%20points='104,20%20104,100%2032,60'%20fill='%23b7dce6'/%3E%3Cpolygon%20points='18,20%2018,100%2090,60'%20fill='%230e97a8'/%3E%3C/svg%3E",
+  "colors": {
+    "accent": "#0a7c8a",
+    "accent_soft": "#0e97a8",
+    "accent_bright": "#14b3c4",
+    "tint": "#e4f3f5",
+    "tint_deep": "#d3ebef"
+  },
+  "colors_cmyk": {
+    "accent_soft": "87,11,36,8"
+  },
+  "source": "manuel",
+  "date_maj": "2026-05-22",
+  "note": "Charte validee sur l'article de reference DentalMonitoring. Valeur CMJN approximative derivee du RVB — a confirmer avec DentalMonitoring avant toute impression."
+}
